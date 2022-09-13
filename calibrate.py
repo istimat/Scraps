@@ -6,20 +6,19 @@ import numpy as np
 class Calibration:
 
     def __init__(self, image_path) -> None:
+        self.image_path = image_path
         self.calibration_image = cv2.imread(image_path)
-        self.perspectiveTransform = ''
-        self.srcPoints = np.float32([(107,     0),
-                                     (622,  125),
-                                     (127,  364),
-                                     (467,    443)])
-
-        self.dstPoints = np.float32([(600, 0),
-                                     (0, 0),
-                                     (600, 531),
-                                     (0, 531)])
-        self.testing = True
         self.h, self.w = self.calibration_image.shape[:2]
 
+        self.unwarped_image = None
+        self.perspectiveTransform = None
+        self.srcPoints = None
+        self.dstPoints = None
+
+        self.testing = True
+        
+    def __repr__(self) -> str:
+        return f"{self.image_path!r}"
 
 
     def setTopDownMatrix(self):
@@ -54,6 +53,15 @@ class Calibration:
 # we will select the destination point which will map the source points in
 # original image to destination points in unwarped image
 
+        self.srcPoints = np.float32([(107,     0),
+                                     (622,  125),
+                                     (127,  364),
+                                     (467,    443)])
+
+        self.dstPoints = np.float32([(600, 0),
+                                     (0, 0),
+                                     (600, 531),
+                                     (0, 531)])
 
 calibration = Calibration("data/undistorted.png")
 
