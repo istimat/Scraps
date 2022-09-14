@@ -15,7 +15,7 @@ class Calibration:
         self.srcPoints = None
         self.dstPoints = None
 
-        self.testing = True
+        self.testing = False
         
     def __repr__(self) -> str:
         return f"{self.image_path!r}"
@@ -56,11 +56,13 @@ class Calibration:
             if event == cv2.EVENT_LBUTTONDOWN and len(gathered_points) < 4:
                 print(x, ' ',y)
                 gathered_points.append((float(x), float(y)))
+                cv2.circle(self.calibration_image, (x, y), radius=5, color=(0, 0, 255), thickness=-1)
+                cv2.putText(self.calibration_image, f"{x} {y}", (x,y),cv2.FONT_HERSHEY_SIMPLEX, 1, (0,10,255), 2)
+                cv2.imshow('image', self.calibration_image)
 
+        
 
-
-        img = cv2.imread('data/undistorted.png', 1)
-        cv2.imshow('image', img)
+        cv2.imshow('image', self.calibration_image)
 
         cv2.setMouseCallback('image', click_event)
 
@@ -89,8 +91,8 @@ class Calibration:
 calibration = Calibration("data/undistorted.png")
 
 calibration.pickCornerPoints()
-calibration.setTopDownMatrix()
-calibration.topDown()
+#calibration.setTopDownMatrix()
+#calibration.topDown()
 
 #cv2.imshow("so", im)
 cv2.waitKey(0)[[1]][1]
