@@ -47,27 +47,57 @@ class Calibration:
         return unwarped_image
 
 
+    def pickCornerPoints(self):
+
+        gathered_points = []
+
+        def click_event(event, x, y, flags, params):
+        
+            if event == cv2.EVENT_LBUTTONDOWN and len(gathered_points) < 4:
+                print(x, ' ',y)
+                gathered_points.append((float(x), float(y)))
+
+
+
+        img = cv2.imread('data/undistorted.png', 1)
+        cv2.imshow('image', img)
+
+        cv2.setMouseCallback('image', click_event)
+
+        cv2.waitKey(0)
+
+        cv2.destroyAllWindows()
+
+        print(f"Gathered points: {gathered_points}")    
+        self.srcPoints = np.asarray(gathered_points, np.float32)
+
 #im = cv2.imread("data/undistorted.png")
 #w, h = im.shape[0], im.shape[1]
 # We will first manually select the source points 
 # we will select the destination point which will map the source points in
 # original image to destination points in unwarped image
 
-        self.srcPoints = np.float32([(107,     0),
-                                     (622,  125),
-                                     (127,  364),
-                                     (467,    443)])
+
 
         self.dstPoints = np.float32([(600, 0),
                                      (0, 0),
-                                     (600, 531),
-                                     (0, 531)])
+                                     (0, 531),
+                                     (600, 531)])
+        print(f"srcPoints: {self.srcPoints}")
+        print(f"dstPoints: {self.dstPoints}")
 
 calibration = Calibration("data/undistorted.png")
 
+calibration.pickCornerPoints()
 calibration.setTopDownMatrix()
 calibration.topDown()
 
 #cv2.imshow("so", im)
 cv2.waitKey(0)[[1]][1]
 cv2.destroyAllWindows()
+
+
+ #       self.srcPoints = np.float32([(107,     0),
+ #                                    (622,  125),
+ #                                    (127,  364),
+ #                                    (467,    443)])
