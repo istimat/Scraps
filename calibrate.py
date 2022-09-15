@@ -15,7 +15,7 @@ class Calibration:
         self.srcPoints = None
         self.dstPoints = None
 
-        self.testing = False
+        self.testing = True
         
     def __repr__(self) -> str:
         return f"{self.image_path!r}"
@@ -34,8 +34,8 @@ class Calibration:
             f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 10))
             f.subplots_adjust(hspace=.2, wspace=.05)
             ax1.imshow(self.calibration_image)
-            x = [self.srcPoints[0][0], self.srcPoints[2][0], self.srcPoints[3][0], self.srcPoints[1][0], self.srcPoints[0][0]]
-            y = [self.srcPoints[0][1], self.srcPoints[2][1], self.srcPoints[3][1], self.srcPoints[1][1], self.srcPoints[0][1]]
+            x = [self.srcPoints[0][0], self.srcPoints[1][0], self.srcPoints[2][0], self.srcPoints[3][0], self.srcPoints[0][0]]
+            y = [self.srcPoints[0][1], self.srcPoints[1][1], self.srcPoints[2][1], self.srcPoints[3][1], self.srcPoints[0][1]]
             ax1.plot(x, y, color='red', alpha=0.4, linewidth=3, solid_capstyle='round', zorder=2)
             ax1.set_ylim([self.h, 0])
             ax1.set_xlim([0, self.w])
@@ -91,8 +91,8 @@ class Calibration:
 calibration = Calibration("data/undistorted.png")
 
 calibration.pickCornerPoints()
-#calibration.setTopDownMatrix()
-#calibration.topDown()
+calibration.setTopDownMatrix()
+calibration.topDown()
 
 #cv2.imshow("so", im)
 cv2.waitKey(0)[[1]][1]
