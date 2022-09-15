@@ -50,19 +50,20 @@ class Calibration:
     def pickCornerPoints(self):
 
         gathered_points = []
+        image_with_selection_points = np.copy(self.calibration_image)
 
         def click_event(event, x, y, flags, params):
         
             if event == cv2.EVENT_LBUTTONDOWN and len(gathered_points) < 4:
                 print(x, ' ',y)
                 gathered_points.append((float(x), float(y)))
-                cv2.circle(self.calibration_image, (x, y), radius=5, color=(0, 0, 255), thickness=-1)
-                cv2.putText(self.calibration_image, f"{x} {y}", (x,y),cv2.FONT_HERSHEY_SIMPLEX, 1, (0,10,255), 2)
-                cv2.imshow('image', self.calibration_image)
+                cv2.circle(image_with_selection_points, (x, y), radius=5, color=(0, 0, 255), thickness=-1)
+                cv2.putText(image_with_selection_points, f"{x} {y}", (x,y),cv2.FONT_HERSHEY_SIMPLEX, 1, (0,10,255), 2)
+                cv2.imshow('image', image_with_selection_points)
 
         
 
-        cv2.imshow('image', self.calibration_image)
+        cv2.imshow('image', image_with_selection_points)
 
         cv2.setMouseCallback('image', click_event)
 
@@ -95,7 +96,7 @@ calibration.setTopDownMatrix()
 calibration.topDown()
 
 #cv2.imshow("so", im)
-cv2.waitKey(0)[[1]][1]
+cv2.waitKey(0)
 cv2.destroyAllWindows()
 
 
