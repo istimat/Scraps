@@ -11,15 +11,14 @@ class App:
     def __init__(self, window, window_title, image_path=calibration.image_path):
         self.window = window
         self.window.title(window_title)
-
-        # Load an image using OpenCV
-        self.cv_img = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2RGB)
-
-        # Get the image dimensions (OpenCV stores image data as NumPy ndarray)
-        self.image_height, self.image_width, no_channels = self.cv_img.shape
-
         self.window_height = 600
         self.window_width = 800
+
+        # Load an image using OpenCV
+        self.cv_img = cv2.cvtColor(calibration.calibration_image, cv2.COLOR_BGR2RGB)
+        self.image_height, self.image_width, no_channels = self.cv_img.shape
+
+
 
         imageFrame = tkinter.Frame(window, width = self.image_width, height = self.image_height, highlightbackground="blue", highlightthickness=1,)
         imageFrame.grid(row = 0, column = 1, padx = 10, pady = 10, rowspan=2)
@@ -64,6 +63,9 @@ class App:
     def get_image_file(self):
         file = tkinter.filedialog.askopenfile(parent=self.window,mode='rb',title='Choose a file')
         return file
+
+    def pick_calibration_points(self):
+        image, nr_of_gathered_points = calibration.pickCornerPoints()
 
 
 # Create a window and pass it to the Application object

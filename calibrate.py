@@ -74,6 +74,8 @@ class Calibration:
         print(f"Gathered points: {gathered_points}")    
         self.srcPoints = np.asarray(gathered_points, np.float32)
 
+        return image_with_selection_points, len(gathered_points)
+
 #im = cv2.imread("data/undistorted.png")
 #w, h = im.shape[0], im.shape[1]
 # We will first manually select the source points 
