@@ -89,15 +89,15 @@ class Calibration:
         print(f"srcPoints: {self.srcPoints}")
         print(f"dstPoints: {self.dstPoints}")
 
-calibration = Calibration("data/undistorted.png")
+#calibration = Calibration("data/undistorted.png")
 
-calibration.pickCornerPoints()
-calibration.setTopDownMatrix()
-calibration.topDown()
+#calibration.pickCornerPoints()
+#calibration.setTopDownMatrix()
+#calibration.topDown()
 
 #cv2.imshow("so", im)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+#cv2.waitKey(0)
+#cv2.destroyAllWindows()
 
 
  #       self.srcPoints = np.float32([(107,     0),
