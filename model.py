@@ -1,7 +1,20 @@
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
+import PIL.Image, PIL.ImageTk
 
+class Model:
+
+    def __init__(self) -> None:
+        pass
+
+    @staticmethod
+    def cvimage_to_image(cvimage):
+        
+        cvimg = cv2.cvtColor(cvimage, cv2.COLOR_BGR2RGB)
+        photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(cvimg))
+
+        return photo
 
 class Calibration:
 
@@ -84,12 +97,12 @@ class Calibration:
 
 
 
-        self.dstPoints = np.float32([(600, 0),
-                                     (0, 0),
-                                     (0, 531),
-                                     (600, 531)])
-        print(f"srcPoints: {self.srcPoints}")
-        print(f"dstPoints: {self.dstPoints}")
+#        self.dstPoints = np.float32([(600, 0),
+#                                     (0, 0),
+#                                     (0, 531),
+#                                     (600, 531)])
+#        print(f"srcPoints: {self.srcPoints}")
+#        print(f"dstPoints: {self.dstPoints}")
 
 #calibration = Calibration("data/undistorted.png")
 
