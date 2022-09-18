@@ -22,6 +22,8 @@ class View(ttk.Frame):
         self.image_width = 600
         self.image_height = 400
 
+        self.image_id = None
+        self.current_image = None
         # Load an image using OpenCV
         
         #self.image_height, self.image_width, no_channels = self.cv_img.shape
@@ -51,8 +53,8 @@ class View(ttk.Frame):
         self.btn_choose_points=tkinter.Button(config_buttons_frame, text='Choose points', width=10, command=self.pick_calibration_points)
         self.btn_choose_points.grid(row=1, column=0, padx=5, pady=5)
 
-        self.dummy_image = dummy_image = tkinter.PhotoImage(file="data/undistorted.png")
-        self.show_image(dummy_image)
+        #self.dummy_image = dummy_image = tkinter.PhotoImage(file="data/initial_image.png")
+        #self.show_image(dummy_image)
         
 
     def set_controller(self, controller):
@@ -64,8 +66,15 @@ class View(ttk.Frame):
         self.controller = controller
 
     def show_image(self, image):
-        self.canvas.create_image(0, 0, image=image, anchor=tkinter.NW)
+        self.current_image = image
+        self.image_id = self.canvas.create_image(0, 0, image=image, anchor=tkinter.NW)
         self.canvas.update()
+
+    def update_image(self, new_image):
+        self.current_image = new_image
+        self.canvas.itemconfig(self.image_id, image = new_image)
+        self.canvas.update()
+        print(self.image_id)
 
     # Callback for the "Blur" button
     def blur_image(self):
@@ -77,8 +86,10 @@ class View(ttk.Frame):
 
     def pick_calibration_points(self):
         if self.controller:
-            self.controller.pick_calibration_points()
+            self.controller.set_calibration_mode()
 
-    @staticmethod
-    def canvas_click(event):
-        print ("clicked at", event.x, event.y)
+    def canvas_click(self, event):
+        if self.controller:
+            self.controller.canvas_click(event)
+
+
