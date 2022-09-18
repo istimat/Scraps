@@ -19,8 +19,8 @@ class View(ttk.Frame):
         self.window_height = 600
         self.window_width = 800
         #self.image_path = image_path
-        self.image_width = 200
-        self.image_height = 200
+        self.image_width = 600
+        self.image_height = 400
 
         # Load an image using OpenCV
         
@@ -38,29 +38,21 @@ class View(ttk.Frame):
         config_buttons_frame = tkinter.Frame(self, width = 200, height = 100, highlightbackground="blue", highlightthickness=1,)
         config_buttons_frame.grid(row = 1, column = 0, padx= 10, pady = 10)
 
-        # Create a canvas that can fit the above image
         self.canvas = tkinter.Canvas(imageFrame, width = self.image_width, height = self.image_height)
         self.canvas.pack()
 
-        # Use PIL (Pillow) to convert the NumPy ndarray to a PhotoImage
-        
-
-        # Add a PhotoImage to the Canvas
-        
-
-        
-
-        # Button that lets the user blur the image
         self.btn_blur=tkinter.Button(load_image_buttons_frame, text="Blur", width=10, command=self.blur_image)
         self.btn_blur.grid(row=1, column=0, padx=5, pady=5)
 
         self.btn_get_image=tkinter.Button(load_image_buttons_frame, text="Browse", width=10, command=self.get_image_file)
         self.btn_get_image.grid(row=1, column=2, padx=5, pady=5)
 
-        self.btn_choose_points=tkinter.Button(config_buttons_frame, text='Choose points', width=10, command=calibration.pickCornerPoints)
+        self.btn_choose_points=tkinter.Button(config_buttons_frame, text='Choose points', width=10, command=self.pick_calibration_points)
         self.btn_choose_points.grid(row=1, column=0, padx=5, pady=5)
 
-        self.window.mainloop()
+        self.dummy_image = dummy_image = tkinter.PhotoImage(file="data/undistorted.png")
+        self.show_image(dummy_image)
+        
 
     def set_controller(self, controller):
         """
@@ -72,17 +64,17 @@ class View(ttk.Frame):
 
     def show_image(self, image):
         self.canvas.create_image(0, 0, image=image, anchor=tkinter.NW)
+        self.canvas.update()
 
     # Callback for the "Blur" button
     def blur_image(self):
-        self.cv_img = cv2.blur(self.cv_img, (3, 3))
-        self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(self.cv_img))
-        self.canvas.create_image(0, 0, image=self.photo, anchor=tkinter.NW)
+        pass
 
     def get_image_file(self):
         file = tkinter.filedialog.askopenfile(parent=self,mode='rb',title='Choose a file')
         return file
 
     def pick_calibration_points(self):
-        image, nr_of_gathered_points = calibration.pickCornerPoints()
+        if self.controller:
+            self.controller.pick_calibration_points()
 
