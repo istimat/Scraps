@@ -39,6 +39,7 @@ class View(ttk.Frame):
         config_buttons_frame.grid(row = 1, column = 0, padx= 10, pady = 10)
 
         self.canvas = tkinter.Canvas(imageFrame, width = self.image_width, height = self.image_height)
+        self.canvas.bind("<Button-1>", self.canvas_click)
         self.canvas.pack()
 
         self.btn_blur=tkinter.Button(load_image_buttons_frame, text="Blur", width=10, command=self.blur_image)
@@ -78,3 +79,6 @@ class View(ttk.Frame):
         if self.controller:
             self.controller.pick_calibration_points()
 
+    @staticmethod
+    def canvas_click(event):
+        print ("clicked at", event.x, event.y)

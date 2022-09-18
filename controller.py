@@ -22,8 +22,8 @@ class Controller:
         gathered_points = []
         point = None
         image_with_points = np.copy(self.cvimage)
-        while len(gathered_points):
-            point = self.model.pick_point(self.cvimage)
+        while len(gathered_points) > 4:
+            #point = self.model.pick_point(self.cvimage)
             print(f"Point selected: {point}")
             gathered_points.append(point)
 
