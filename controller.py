@@ -21,7 +21,8 @@ class Controller:
 
         self.model.image_path_to_cv(file)
         print(self.model.image_path)
-        self.show_image(self.model.image)
+        self.display_image = np.copy(self.model.image)
+        self.show_image(self.display_image)
 
     def cvimage_to_image(self, cv_image):
         
@@ -56,12 +57,12 @@ class Controller:
                 print("calibration picking off!")
             
             self.model.srcPoints = self.gathered_points
-            self.gathered_points = None
     
     def top_down(self):
         self.model.setTopDownMatrix()
         self.model.topDown()
         self.show_image(self.model.top_down_image)
+        self.gathered_points = []
 
     def canvas_click(self, event):
 
