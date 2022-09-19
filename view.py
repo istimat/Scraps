@@ -22,13 +22,11 @@ class View(ttk.Frame):
         self.image_width = 600
         self.image_height = 400
 
+        self.button_width = 15
+
         self.image_id = None
         self.current_image = None
-        # Load an image using OpenCV
-        
-        #self.image_height, self.image_width, no_channels = self.cv_img.shape
-
-
+ 
 
         imageFrame = tkinter.Frame(self, width = self.image_width, height = self.image_height, highlightbackground="blue", highlightthickness=1,)
         imageFrame.grid(row = 0, column = 1, padx = 10, pady = 10, rowspan=2)
@@ -39,26 +37,40 @@ class View(ttk.Frame):
 
         config_buttons_frame = tkinter.Frame(self, width = 200, height = 100, highlightbackground="blue", highlightthickness=1,)
         config_buttons_frame.grid(row = 1, column = 0, padx= 10, pady = 10)
+        tkinter.Label(config_buttons_frame, text="Calibration").grid(row=0, column=0, padx=10, pady=2, columnspan=3)
 
         self.canvas = tkinter.Canvas(imageFrame, width = self.image_width, height = self.image_height)
         self.canvas.bind("<Button-1>", self.canvas_click)
         self.canvas.pack()
 
-        self.btn_blur=tkinter.Button(load_image_buttons_frame, text="Blur", width=10, command=self.blur_image)
+        self.btn_blur=tkinter.Button(load_image_buttons_frame, text="Blur", width=self.button_width, command=self.blur_image)
         self.btn_blur.grid(row=1, column=0, padx=5, pady=5)
 
-        self.btn_get_image=tkinter.Button(load_image_buttons_frame, text="Browse", width=10, command=self.get_image_file)
+        self.btn_get_image=tkinter.Button(load_image_buttons_frame, text="Browse", width=self.button_width, command=self.get_image_file)
         self.btn_get_image.grid(row=1, column=2, padx=5, pady=5)
 
-        self.btn_choose_points=tkinter.Button(config_buttons_frame, text='Choose points', width=10, command=self.pick_calibration_points)
+        self.btn_choose_points=tkinter.Button(config_buttons_frame, text='Choose points', width=self.button_width, command=self.pick_calibration_points)
         self.btn_choose_points.grid(row=1, column=0, padx=5, pady=5)
 
-        self.btn_top_down=tkinter.Button(config_buttons_frame, text='Top Down', width=10, command=self.top_down)
+        self.btn_top_down=tkinter.Button(config_buttons_frame, text='Top Down', width=self.button_width, command=self.top_down)
         self.btn_top_down.grid(row=1, column=1, padx=5, pady=5)
 
+        self.btn_load_calib=tkinter.Button(config_buttons_frame, text='Load Calibration', width=self.button_width, command=self.load_calibration)
+        self.btn_load_calib.grid(row=2, column=0, padx=5, pady=5)
+
+        self.btn_save_calib=tkinter.Button(config_buttons_frame, text='Save Calibration', width=self.button_width, command=self.save_calibration)
+        self.btn_save_calib.grid(row=2, column=1, padx=5, pady=5)
+
+
+        self.calibration_buttons = [self.btn_choose_points, self.btn_top_down, self.btn_load_calib, self.btn_save_calib]
         #self.dummy_image = dummy_image = tkinter.PhotoImage(file="data/initial_image.png")
         #self.show_image(dummy_image)
         
+    def load_calibration(self):
+        pass
+
+    def save_calibration(self):
+        pass    
 
     def set_controller(self, controller):
         """
