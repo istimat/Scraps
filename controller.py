@@ -20,6 +20,7 @@ class Controller:
     def set_image_file(self, file):
 
         self.model.image_path_to_cv(file)
+        self.model.image_path = file
         print(self.model.image_path)
         self.display_image = np.copy(self.model.image)
         self.show_image(self.display_image)
@@ -37,6 +38,12 @@ class Controller:
         self.view.update_image(image_to_show)
 
     def set_calibration_mode(self):
+        if len(self.gathered_points):    
+            self.model.srcPoints = None
+            self.gathered_points = []
+            self.set_image_file(self.model.image_path)
+            print("calibration picking reset!")
+
         self.mode_calibration_pick = True
         print("calibration picking on!")
 
