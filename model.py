@@ -12,10 +12,10 @@ class Model:
 
 class Calibration:
 
-    def __init__(self, image_path) -> None:
-        self.image_path = image_path
-        self.calibration_image = cv2.imread(image_path)
-        self.h, self.w = self.calibration_image.shape[:2]
+    def __init__(self) -> None:
+        self.image_path = None
+        self.image = None
+        #self.h, self.w = 
 
         self.unwarped_image = None
         self.perspectiveTransform = None
@@ -31,6 +31,8 @@ class Calibration:
     def __repr__(self) -> str:
         return f"{self.image_path!r}"
 
+    def image_path_to_cv(self, image_path):
+        self.image = cv2.imread(image_path)
 
     def setTopDownMatrix(self):
         self.srcPoints = np.asarray(self.srcPoints, np.float32)
@@ -40,12 +42,13 @@ class Calibration:
         
 
     def topDown(self):
-        unwarped_image = cv2.warpPerspective(self.calibration_image, self.perspectiveTransformMatrix, (self.w, self.h), flags=cv2.INTER_LINEAR)
+        w, h = self.image.shape[:2]
+        unwarped_image = cv2.warpPerspective(self.image, self.perspectiveTransformMatrix, (w, h), flags=cv2.INTER_LINEAR)
 
         if self.testing:
             f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 10))
             f.subplots_adjust(hspace=.2, wspace=.05)
-            ax1.imshow(self.calibration_image)
+            ax1.imshow(self.image)
             x = [self.srcPoints[0][0], self.srcPoints[1][0], self.srcPoints[2][0], self.srcPoints[3][0], self.srcPoints[0][0]]
             y = [self.srcPoints[0][1], self.srcPoints[1][1], self.srcPoints[2][1], self.srcPoints[3][1], self.srcPoints[0][1]]
             ax1.plot(x, y, color='red', alpha=0.4, linewidth=3, solid_capstyle='round', zorder=2)

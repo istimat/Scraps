@@ -8,7 +8,7 @@ class Controller:
     def __init__(self, model, view):
         self.model = model
         self.view = view
-        self.cvimage = model.calibration_image
+        self.cvimage = model.image
         self.display_image = np.copy(self.cvimage)
         self.last_clicked_canvas = None
         self.mode_calibration_pick = False
@@ -17,12 +17,23 @@ class Controller:
         self.gathered_points = []
         #self.show_image(self.cvimage)
 
-    def cvimage_to_image(self, cvimage):
+    def set_image_file(self, file):
+
+        self.model.image_path_to_cv(file)
+        print(self.model.image_path)
+        self.show_image(self.model.image)
+
+    def cvimage_to_image(self, cv_image):
         
-        cvimg = cv2.cvtColor(cvimage, cv2.COLOR_BGR2RGB)
+        cvimg = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
         photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(cvimg))
 
         return photo
+
+    def show_image(self, cv_image):
+
+        image_to_show = self.cvimage_to_image(cv_image)
+        self.view.update_image(image_to_show)
 
     def set_calibration_mode(self):
         self.mode_calibration_pick = True
@@ -31,9 +42,6 @@ class Controller:
     def pick_calibration_points(self):
 
         if self.mode_calibration_pick:
-            #gathered_points = []
-
-            #point = self.model.pick_point(self.cvimage)
             if self.last_clicked_canvas is not None:
                 point = self.last_clicked_canvas
                 
@@ -54,13 +62,6 @@ class Controller:
         self.model.setTopDownMatrix()
         self.model.topDown()
         self.show_image(self.model.top_down_image)
-
-
-        
-    def show_image(self, cvimage):
-
-        image_to_show = self.cvimage_to_image(cvimage)
-        self.view.update_image(image_to_show)
 
     def canvas_click(self, event):
 

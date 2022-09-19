@@ -84,8 +84,12 @@ class View(ttk.Frame):
         pass
 
     def get_image_file(self):
-        file = tkinter.filedialog.askopenfile(parent=self,mode='rb',title='Choose a file')
-        return file
+        file = tkinter.filedialog.askopenfilename(parent=self,title='Choose a file', filetypes = (("Image files",
+                                                        "*.png"),
+                                                       ("all files",
+                                                        "*.*")))
+        if self.controller:
+            self.controller.set_image_file(file)
 
     def pick_calibration_points(self):
         if self.controller:

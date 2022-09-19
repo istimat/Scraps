@@ -10,7 +10,7 @@ class App(tk.Tk):
         self.title('Scraps')
 
         # create a model
-        model = Calibration("data/undistorted.png")
+        model = Calibration()
 
         # create a view and place it on the root window
         view = View(self)
