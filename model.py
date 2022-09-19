@@ -20,16 +20,21 @@ class Calibration:
         self.unwarped_image = None
         self.perspectiveTransform = None
         self.srcPoints = None
-        self.dstPoints = None
+        self.dstPoints = np.float32([(600, 0),
+                                     (0, 0),
+                                     (0, 531),
+                                     (600, 531)])
 
-        self.testing = True
+        self.testing = False
+        self.top_down_image = None
         
     def __repr__(self) -> str:
         return f"{self.image_path!r}"
 
 
     def setTopDownMatrix(self):
-        
+        self.srcPoints = np.asarray(self.srcPoints, np.float32)
+        #self.dstPoints = np.asarray(self.dstPoints, np.float32)
         # use cv2.getPerspectiveTransform() to get the transform matrix
         self.perspectiveTransformMatrix = cv2.getPerspectiveTransform(self.srcPoints, self.dstPoints)
         
@@ -51,7 +56,7 @@ class Calibration:
             ax2.set_title('Unwarped Image', fontsize=30)
             plt.show()
         
-        return unwarped_image
+        self.top_down_image = unwarped_image
 
 
     def pick_point(self, cvimage):
@@ -69,6 +74,6 @@ class Calibration:
         cv2.waitKey(0)
 
         print(f"Gathered point: {gathered_point}")    
-        self.srcPoints = np.asarray(gathered_point, np.float32)
+        
 
         return cvimage, self.srcPoints

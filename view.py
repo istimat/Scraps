@@ -53,6 +53,9 @@ class View(ttk.Frame):
         self.btn_choose_points=tkinter.Button(config_buttons_frame, text='Choose points', width=10, command=self.pick_calibration_points)
         self.btn_choose_points.grid(row=1, column=0, padx=5, pady=5)
 
+        self.btn_top_down=tkinter.Button(config_buttons_frame, text='Top Down', width=10, command=self.top_down)
+        self.btn_top_down.grid(row=1, column=1, padx=5, pady=5)
+
         #self.dummy_image = dummy_image = tkinter.PhotoImage(file="data/initial_image.png")
         #self.show_image(dummy_image)
         
@@ -87,6 +90,10 @@ class View(ttk.Frame):
     def pick_calibration_points(self):
         if self.controller:
             self.controller.set_calibration_mode()
+
+    def top_down(self):
+        if self.controller:
+            self.controller.top_down()
 
     def canvas_click(self, event):
         if self.controller:

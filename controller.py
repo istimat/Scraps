@@ -46,6 +46,15 @@ class Controller:
             if len(self.gathered_points) == 4:
                 self.mode_calibration_pick = False
                 print("calibration picking off!")
+            
+            self.model.srcPoints = self.gathered_points
+            self.gathered_points = None
+    
+    def top_down(self):
+        self.model.setTopDownMatrix()
+        self.model.topDown()
+        self.show_image(self.model.top_down_image)
+
 
         
     def show_image(self, cvimage):
@@ -54,6 +63,6 @@ class Controller:
         self.view.update_image(image_to_show)
 
     def canvas_click(self, event):
-        print ("clicked at", event.x, event.y)
+
         self.last_clicked_canvas = (event.x, event.y)
         self.pick_calibration_points()
