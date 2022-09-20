@@ -29,7 +29,7 @@ class View(ttk.Frame):
  
 
         imageFrame = tkinter.Frame(self, width = self.image_width, height = self.image_height, highlightbackground="blue", highlightthickness=1,)
-        imageFrame.grid(row = 0, column = 1, padx = 10, pady = 10, rowspan=2)
+        imageFrame.grid(row = 0, column = 1, padx = 10, pady = 10, rowspan=3)
 
         load_image_buttons_frame = tkinter.Frame(self, width = 200, height = 100, highlightbackground="blue", highlightthickness=1,)
         load_image_buttons_frame.grid(row = 0, column = 0, padx = 10, pady = 10)
@@ -63,8 +63,11 @@ class View(ttk.Frame):
 
 
         self.calibration_buttons = [self.btn_choose_points, self.btn_top_down, self.btn_load_calib, self.btn_save_calib]
-        #self.dummy_image = dummy_image = tkinter.PhotoImage(file="data/initial_image.png")
-        #self.show_image(dummy_image)
+        
+        self.messagebox = tkinter.Text(self, height = 10, width = 50)
+        self.messagebox.grid(row=2, column=0, padx=5, pady=5)
+        #self.messagebox.insert(tkinter.END,"Message Box")
+
         
     def load_calibration(self):
         pass

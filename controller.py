@@ -9,6 +9,8 @@ class Controller:
     def __init__(self, model, view):
         self.model = model
         self.view = view
+        self.messagebox = MessageBox(view)
+
         self.cvimage = model.image
         self.display_image = np.copy(self.cvimage)
         self.last_clicked_canvas = None
@@ -32,6 +34,7 @@ class Controller:
         self.show_image(self.display_image)
         self.view.btn_choose_points["state"] = "normal"
         self.view.btn_load_calib["state"] = "normal"
+        self.messagebox.show(f"File: {self.model.image_path} loaded.")
 
     def cvimage_to_image(self, cv_image):
         
@@ -51,10 +54,10 @@ class Controller:
             self.gathered_points = []
             self.set_image_file(self.model.image_path)
             self.view.btn_top_down["state"] = "disabled"
-            print("calibration picking reset!")
+            self.messagebox.show("calibration picking reset!")
 
         self.mode_calibration_pick = True
-        print("calibration picking on!")
+        self.messagebox.show("calibration picking on!")
 
     def pick_calibration_points(self):
 
@@ -71,7 +74,7 @@ class Controller:
             if len(self.gathered_points) == 4:
                 self.mode_calibration_pick = False
                 self.view.btn_top_down["state"] = "normal"
-                print("calibration picking off!")
+                self.messagebox.show("calibration picking done!")
             
             self.model.srcPoints = self.gathered_points
     
@@ -81,8 +84,16 @@ class Controller:
         self.show_image(self.model.top_down_image)
         self.gathered_points = []
         self.view.btn_top_down["state"] = "disabled"
+        self.messagebox.show("Top Down correction done.")
 
     def canvas_click(self, event):
 
         self.last_clicked_canvas = (event.x, event.y)
         self.pick_calibration_points()
+
+class MessageBox:
+    def __init__(self, view) -> None:
+        self.view = view
+
+    def show(self, message):
+        self.view.messagebox.insert(tkinter.END, f"{message} \n")
