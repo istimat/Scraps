@@ -15,7 +15,7 @@ class Calibration:
     def __init__(self) -> None:
         self.image_path = None
         self.image = None
-        self.view_resolution = (500, 500)
+        #self.view_resolution = (500, 500)
 
         self.unwarped_image = None
         self.perspectiveTransform = None
@@ -31,11 +31,15 @@ class Calibration:
     def __repr__(self) -> str:
         return f"{self.image_path!r}"
 
+    def get_image_size(self, image):
+        w, h = image.shape[:2]
+        return w, h
+
     def image_path_to_cv(self, image_path):
 
         self.image = cv2.imread(image_path)
         _image = np.array(self.image).astype('uint8')
-        self.image = cv2.resize(_image, self.view_resolution, interpolation=cv2.INTER_CUBIC)
+        #self.image = cv2.resize(_image, self.view_resolution, interpolation=cv2.INTER_CUBIC)
         
 
     def setTopDownMatrix(self):

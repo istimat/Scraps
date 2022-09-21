@@ -20,7 +20,7 @@ class View(ttk.Frame):
         self.window_width = 800
         #self.image_path = image_path
         self.image_width = 600
-        self.image_height = 400
+        self.image_height = 500
 
         self.button_width = 15
 

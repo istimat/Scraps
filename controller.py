@@ -13,9 +13,10 @@ class Controller:
 
         self.cvimage = model.image
         self.display_image = np.copy(self.cvimage)
+        self.display_image_scale = None
         self.last_clicked_canvas = None
         self.mode_calibration_pick = False
-        self.dummy_image = dummy_image = tkinter.PhotoImage(file="data/initial_image.png")
+        self.dummy_image = dummy_image = tkinter.PhotoImage(file="data/initial_image_500px.png")
         self.view.show_image(dummy_image)
         self.gathered_points = []
         self.disable_buttons()
@@ -31,10 +32,27 @@ class Controller:
         self.model.image_path = file
         print(self.model.image_path)
         self.display_image = np.copy(self.model.image)
+        self.scale_display_image()
         self.show_image(self.display_image)
         self.view.btn_choose_points["state"] = "normal"
         self.view.btn_load_calib["state"] = "normal"
         self.messagebox.show(f"File: {self.model.image_path} loaded.")
+
+    def scale_display_image(self):
+        width, height = self.model.get_image_size(self.display_image)
+        self.messagebox.show(f"display image width: {width}")
+        self.messagebox.show(f"display image height: {height}")
+
+        scale_h = self.view.image_height / height
+        self.display_image_scale = scale_w = scale_h
+
+        new_width = int(scale_w * width)
+        new_height = int(scale_h * height)
+
+        self.messagebox.show(f"display image scaled to: {new_width} X {new_height}")
+
+        #self.display_image.zoom(scale_w, scale_h)
+        self.display_image = cv2.resize(self.display_image, (new_height, new_width), interpolation=cv2.INTER_CUBIC)
 
     def cvimage_to_image(self, cv_image):
         
@@ -76,8 +94,19 @@ class Controller:
                 self.view.btn_top_down["state"] = "normal"
                 self.messagebox.show("calibration picking done!")
             
-            self.model.srcPoints = self.gathered_points
-    
+            rescaled_points = self.rescale_picked_points(self.gathered_points)
+            self.model.srcPoints = rescaled_points
+
+    def rescale_picked_points(self, point_list):
+        rescaled_list = []
+        for point in point_list:
+            x, y = point
+            x = x * 1/self.display_image_scale
+            y = y * 1/self.display_image_scale
+
+            rescaled_list.append((x,y))
+        return rescaled_list
+
     def top_down(self):
         self.model.setTopDownMatrix()
         self.model.topDown()
