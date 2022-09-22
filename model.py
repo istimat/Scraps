@@ -3,19 +3,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-class Model:
-
-    def __init__(self) -> None:
-        pass
-
-
-
 class Calibration:
 
     def __init__(self) -> None:
         self.image_path = None
         self.image = None
-        #self.view_resolution = (500, 500)
 
         self.calibration_file = None
         self.perspectiveTransformMatrix = None
@@ -62,8 +54,7 @@ class Calibration:
 
     def setTopDownMatrix(self):
         self.srcPoints = np.asarray(self.srcPoints, np.float32)
-        #self.dstPoints = np.asarray(self.dstPoints, np.float32)
-        # use cv2.getPerspectiveTransform() to get the transform matrix
+
         if self.perspectiveTransformMatrix is None:
             self.perspectiveTransformMatrix = cv2.getPerspectiveTransform(self.srcPoints, self.dstPoints)
 

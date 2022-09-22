@@ -3,13 +3,13 @@ import cv2
 import PIL.Image, PIL.ImageTk
 import numpy as np
 import tkinter
+from model import Calibration
 
-from model import Model
 from view import View
 
 
 class Controller:
-    def __init__(self, model: Model, view: View):
+    def __init__(self, model: Calibration, view: View):
         self.model = model
         self.view = view
         self.messagebox = MessageBox(view)
@@ -63,8 +63,6 @@ class Controller:
         new_height = int(scale_h * height)
 
         self.messagebox.show(f"display image scaled to: {new_width} X {new_height}")
-
-        #self.display_image.zoom(scale_w, scale_h)
         self.display_image = cv2.resize(self.display_image, (new_height, new_width), interpolation=cv2.INTER_CUBIC)
 
 

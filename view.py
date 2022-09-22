@@ -1,26 +1,20 @@
 import tkinter
 import tkinter.filedialog
 from tkinter import ttk
-from turtle import width
-import cv2
 import os
+
 from controller import Controller
 
-from model import Calibration
 
-#calibration = Calibration("data/undistorted.png")
  
 class View(ttk.Frame):
-    #def __init__(self,parent, window, window_title, image_path):
     def __init__(self,parent):
     
         super().__init__(parent)
         
-        self.controller = None
-        #self.window.title(window_title)
+        self.controller: Controller = None
         self.window_height = 600
         self.window_width = 800
-        #self.image_path = image_path
         self.image_width = 600
         self.image_height = 500
 
@@ -75,12 +69,13 @@ class View(ttk.Frame):
 
         
     def load_calibration(self):
-        file = tkinter.filedialog.askopenfilename(parent=self,title='Choose a configuration file', filetypes = (("XML files",
-                                                        "*.xml"),
-                                                       ("all files",
-                                                        "*.*")), initialdir=os.curdir)
+        file = tkinter.filedialog.askopenfilename(parent=self,title='Choose a configuration file', 
+                                                  filetypes = (("XML files", "*.xml"),
+                                                               ("all files","*.*")), 
+                                                  initialdir=os.curdir)
         if self.controller:
             self.controller.load_calibration_file(file)
+
 
     def save_calibration(self):
         if self.controller:
