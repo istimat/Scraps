@@ -3,17 +3,19 @@ import cv2
 import PIL.Image, PIL.ImageTk
 import numpy as np
 import tkinter
-from model import Calibration
 
-from view import View
+#trick to avoid circular import but allow type hinting for intellisence
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from model import Calibration
+    from view import View
 
 
 class Controller:
-    def __init__(self, model: Calibration, view: View):
+    def __init__(self, model: 'Calibration', view: 'View'):
         self.model = model
         self.view = view
         self.messagebox = MessageBox(view)
-
         self.cvimage = model.image
         self.display_image = np.copy(self.cvimage)
         self.display_image_scale = None
