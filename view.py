@@ -70,10 +70,13 @@ class View(ttk.Frame):
 
         
     def load_calibration(self):
-        pass
+        if self.controller:
+            self.controller.load_calibration_file()
 
     def save_calibration(self):
-        pass    
+        if self.controller:
+            self.controller.save_calibration_file()
+
 
     def set_controller(self, controller):
         """

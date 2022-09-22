@@ -17,6 +17,9 @@ class Calibration:
         self.image = None
         #self.view_resolution = (500, 500)
 
+        self.calibration_file = None
+        self.perspectiveTransformMatrix = None
+
         self.unwarped_image = None
         self.perspectiveTransform = None
         self.srcPoints = None
@@ -27,9 +30,24 @@ class Calibration:
 
         self.testing = False
         self.top_down_image = None
+
         
     def __repr__(self) -> str:
         return f"{self.image_path!r}"
+
+    def save_calibration(self, filename):
+        cv_file = cv2.FileStorage(filename, cv2.FILE_STORAGE_WRITE)
+        cv_file.write("my_matrix", self.perspectiveTransformMatrix)
+        cv_file.release()
+
+    def read_calibration(self, filename):
+        self.calibration_file = filename
+        cv_file = cv2.FileStorage(filename, cv2.FILE_STORAGE_READ)
+        matrix = cv_file.getNode("my_matrix").mat()
+        print("read matrix\n", matrix)
+        self.perspectiveTransformMatrix = matrix
+        cv_file.release()
+
 
     def get_image_size(self, image):
         w, h = image.shape[:2]
@@ -46,7 +64,9 @@ class Calibration:
         self.srcPoints = np.asarray(self.srcPoints, np.float32)
         #self.dstPoints = np.asarray(self.dstPoints, np.float32)
         # use cv2.getPerspectiveTransform() to get the transform matrix
-        self.perspectiveTransformMatrix = cv2.getPerspectiveTransform(self.srcPoints, self.dstPoints)
+        if self.perspectiveTransformMatrix is None:
+            self.perspectiveTransformMatrix = cv2.getPerspectiveTransform(self.srcPoints, self.dstPoints)
+
         return self.perspectiveTransformMatrix
 
     def topDown(self):

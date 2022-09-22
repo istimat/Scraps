@@ -22,6 +22,15 @@ class Controller:
         self.disable_buttons()
         #self.show_image(self.cvimage)
 
+    def save_calibration_file(self):
+        self.model.save_calibration("calibration.xml")
+
+    def load_calibration_file(self):
+        self.model.read_calibration("calibration.xml")
+        self.view.btn_top_down["state"] = "normal"
+        
+
+
     def disable_buttons(self):
          for button in self.view.calibration_buttons:
             button["state"] = "disabled"
@@ -92,6 +101,7 @@ class Controller:
             if len(self.gathered_points) == 4:
                 self.mode_calibration_pick = False
                 self.view.btn_top_down["state"] = "normal"
+                self.view.btn_save_calib["state"] = "normal"
                 self.messagebox.show("calibration picking done!")
             
             rescaled_points = self.rescale_picked_points(self.gathered_points)
