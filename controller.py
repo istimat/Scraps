@@ -108,7 +108,8 @@ class Controller:
         return rescaled_list
 
     def top_down(self):
-        self.model.setTopDownMatrix()
+        matrix = self.model.setTopDownMatrix()
+        self.messagebox.show(f"Perspective transformation matrix: {matrix}")
         self.model.topDown()
         self.show_image(self.model.top_down_image)
         self.gathered_points = []

@@ -47,7 +47,7 @@ class Calibration:
         #self.dstPoints = np.asarray(self.dstPoints, np.float32)
         # use cv2.getPerspectiveTransform() to get the transform matrix
         self.perspectiveTransformMatrix = cv2.getPerspectiveTransform(self.srcPoints, self.dstPoints)
-        
+        return self.perspectiveTransformMatrix
 
     def topDown(self):
         w, h = self.image.shape[:2]
