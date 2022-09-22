@@ -1,3 +1,4 @@
+from __future__ import annotations
 from faulthandler import disable
 import cv2
 import PIL.Image, PIL.ImageTk
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class Controller:
-    def __init__(self, model: 'Calibration', view: 'View'):
+    def __init__(self, model: Calibration, view: View):
         self.model = model
         self.view = view
         self.messagebox = MessageBox(view)
