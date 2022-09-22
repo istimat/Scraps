@@ -3,6 +3,8 @@ import tkinter.filedialog
 from tkinter import ttk
 from turtle import width
 import cv2
+import os
+from controller import Controller
 
 from model import Calibration
 
@@ -66,19 +68,26 @@ class View(ttk.Frame):
         
         self.messagebox = tkinter.Text(self, height = 10, width = 50)
         self.messagebox.grid(row=2, column=0, padx=5, pady=5)
-        #self.messagebox.insert(tkinter.END,"Message Box")
+        self.messagebox.bind("<1>", lambda event: self.messagebox.focus_set())
+        #self.vsb = tkinter.Scrollbar(self, orient="vertical", command=self.messagebox.yview)
+        #self.messagebox.configure(yscrollcommand=self.vsb.set)
+        #self.vsb.grid(column=0, row=2, rowspan=1, sticky="NSW")
 
         
     def load_calibration(self):
+        file = tkinter.filedialog.askopenfilename(parent=self,title='Choose a configuration file', filetypes = (("XML files",
+                                                        "*.xml"),
+                                                       ("all files",
+                                                        "*.*")), initialdir=os.curdir)
         if self.controller:
-            self.controller.load_calibration_file()
+            self.controller.load_calibration_file(file)
 
     def save_calibration(self):
         if self.controller:
             self.controller.save_calibration_file()
 
 
-    def set_controller(self, controller):
+    def set_controller(self, controller: Controller):
         """
         Set the controller
         :param controller:

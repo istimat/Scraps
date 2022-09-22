@@ -4,9 +4,12 @@ import PIL.Image, PIL.ImageTk
 import numpy as np
 import tkinter
 
+from model import Model
+from view import View
+
 
 class Controller:
-    def __init__(self, model, view):
+    def __init__(self, model: Model, view: View):
         self.model = model
         self.view = view
         self.messagebox = MessageBox(view)
@@ -20,16 +23,17 @@ class Controller:
         self.view.show_image(dummy_image)
         self.gathered_points = []
         self.disable_buttons()
-        #self.show_image(self.cvimage)
+        
 
     def save_calibration_file(self):
         self.model.save_calibration("calibration.xml")
 
-    def load_calibration_file(self):
-        self.model.read_calibration("calibration.xml")
-        self.view.btn_top_down["state"] = "normal"
-        
 
+    def load_calibration_file(self, file):
+        self.model.read_calibration(file)
+        self.view.btn_top_down["state"] = "normal"
+        self.messagebox.show(f"Calibration file {self.model.calibration_file} loaded.")
+        
 
     def disable_buttons(self):
          for button in self.view.calibration_buttons:
@@ -62,6 +66,7 @@ class Controller:
 
         #self.display_image.zoom(scale_w, scale_h)
         self.display_image = cv2.resize(self.display_image, (new_height, new_width), interpolation=cv2.INTER_CUBIC)
+
 
     def cvimage_to_image(self, cv_image):
         
@@ -136,4 +141,7 @@ class MessageBox:
         self.view = view
 
     def show(self, message):
+        self.view.messagebox.configure(state="normal")
         self.view.messagebox.insert(tkinter.END, f"{message} \n")
+        self.view.messagebox.see("end")
+        self.view.messagebox.configure(state="disabled")
