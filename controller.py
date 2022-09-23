@@ -24,6 +24,8 @@ class Controller:
         self.mode_calibration_pick = False
         self.dummy_image = dummy_image = tkinter.PhotoImage(file="data/initial_image_500px.png")
         self.view.show_image(dummy_image)
+        self.view.horiz_measurement.insert(tkinter.END, "600")
+        self.view.vert_measurement.insert(tkinter.END, "400")
         self.gathered_points = []
         self.disable_buttons()
         
@@ -124,7 +126,11 @@ class Controller:
             rescaled_list.append((x,y))
         return rescaled_list
 
+
+
     def top_down(self):
+        self.model.calculate_dest_points(self.view.horiz_measurement.get("1.0",'end-1c'),
+                                         self.view.vert_measurement.get("1.0",'end-1c'))
         matrix = self.model.setTopDownMatrix()
         self.messagebox.show(f"Perspective transformation matrix: {matrix}")
         self.model.topDown()

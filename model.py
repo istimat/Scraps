@@ -15,10 +15,7 @@ class Calibration:
         self.unwarped_image = None
         self.perspectiveTransform = None
         self.srcPoints = None
-        self.dstPoints = np.float32([(600, 0),
-                                     (0, 0),
-                                     (0, 531),
-                                     (600, 531)])
+        self.dstPoints = None
 
         self.testing = False
         self.top_down_image = None
@@ -50,6 +47,16 @@ class Calibration:
         self.image = cv2.imread(image_path)
         _image = np.array(self.image).astype('uint8')
         #self.image = cv2.resize(_image, self.view_resolution, interpolation=cv2.INTER_CUBIC)
+        
+    def calculate_dest_points(self, horiz, vert):
+        #1mm = 1px
+        h = float(horiz)
+        v = float(vert)
+        self.dstPoints = np.float32([(h, 0),
+                                     (0, 0),
+                                     (0, v),
+                                     (h, v)])
+        print(self.dstPoints)
         
 
     def setTopDownMatrix(self):
