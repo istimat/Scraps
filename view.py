@@ -109,7 +109,7 @@ class View(ttk.Frame):
         self.calibration_buttons = [self.btn_choose_points, self.btn_top_down, self.btn_load_calib, self.btn_save_calib]
         
         self.messagebox = tkinter.Text(self, height = 10, width = 50)
-        self.messagebox.grid(row=2, column=0, padx=5, pady=5)
+        self.messagebox.grid(row=3, column=0, padx=5, pady=5)
         self.messagebox.bind("<1>", lambda event: self.messagebox.focus_set())
         #self.vsb = tkinter.Scrollbar(self, orient="vertical", command=self.messagebox.yview)
         #self.messagebox.configure(yscrollcommand=self.vsb.set)
