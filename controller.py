@@ -90,6 +90,7 @@ class Controller:
             self.messagebox.show("calibration picking reset!")
 
         self.mode_calibration_pick = True
+        self.model.perspectiveTransformMatrix = None
         self.messagebox.show("calibration picking on!")
 
     def pick_calibration_points(self):
