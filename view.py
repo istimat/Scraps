@@ -24,16 +24,42 @@ class View(ttk.Frame):
         self.current_image = None
  
 
-        imageFrame = tkinter.Frame(self, width = self.image_width, height = self.image_height, highlightbackground="blue", highlightthickness=1,)
-        imageFrame.grid(row = 0, column = 1, padx = 10, pady = 10, rowspan=3)
+        imageFrame = tkinter.Frame(self, 
+                                   width = self.image_width,
+                                   height = self.image_height,
+                                   highlightbackground="blue",
+                                   highlightthickness=1,)
+        imageFrame.grid(row = 0, column = 1, padx = 10, pady = 10, rowspan=4)
 
-        load_image_buttons_frame = tkinter.Frame(self, width = 200, height = 100, highlightbackground="blue", highlightthickness=1,)
+        load_image_buttons_frame = tkinter.Frame(self, width = 200, height = 100,
+                                                 highlightbackground="blue",
+                                                 highlightthickness=1,)
         load_image_buttons_frame.grid(row = 0, column = 0, padx = 10, pady = 10)
-        tkinter.Label(load_image_buttons_frame, text="Load an image").grid(row=0, column=0, padx=10, pady=2, columnspan=3)
+        tkinter.Label(load_image_buttons_frame, text="Load an image").grid(row=0,
+                                                                           column=0,
+                                                                           padx=10,
+                                                                           pady=2,
+                                                                           columnspan=3)
 
-        config_buttons_frame = tkinter.Frame(self, width = 200, height = 100, highlightbackground="blue", highlightthickness=1,)
-        config_buttons_frame.grid(row = 1, column = 0, padx= 10, pady = 10)
-        tkinter.Label(config_buttons_frame, text="Calibration").grid(row=0, column=0, padx=10, pady=2, columnspan=3)
+        measurement_frame = tkinter.Frame(self, width=200, height=100,
+                                          highlightbackground="blue", 
+                                          highlightthickness=1,)
+        measurement_frame.grid(row=1, column=0, padx=10, pady=10)
+        tkinter.Label(measurement_frame, text="Measurements").grid(row=0, 
+                                                                     column=0,
+                                                                     padx=10,
+                                                                     pady=2,
+                                                                     columnspan=3)
+
+        config_buttons_frame = tkinter.Frame(self, width = 200, height = 100, 
+                                             highlightbackground="blue", 
+                                             highlightthickness=1)
+        config_buttons_frame.grid(row = 2, column = 0, padx= 10, pady = 10)
+        tkinter.Label(config_buttons_frame, text="Calibration").grid(row=0, 
+                                                                     column=0,
+                                                                     padx=10,
+                                                                     pady=2,
+                                                                     columnspan=3)
 
         self.canvas = tkinter.Canvas(imageFrame, width = self.image_width, height = self.image_height)
         self.canvas.bind("<Button-1>", self.canvas_click)
@@ -44,6 +70,28 @@ class View(ttk.Frame):
 
         self.btn_get_image=tkinter.Button(load_image_buttons_frame, text="Browse", width=self.button_width, command=self.get_image_file)
         self.btn_get_image.grid(row=1, column=2, padx=5, pady=5)
+
+        tkinter.Label(measurement_frame, text="Horizontal").grid(row=1, 
+                                                                   column=0,
+                                                                   padx=10,
+                                                                   pady=2,
+                                                                   columnspan=1)
+        tkinter.Label(measurement_frame, text="Vertical").grid(row=1, 
+                                                                   column=1,
+                                                                   padx=10,
+                                                                   pady=2,
+                                                                   columnspan=1)
+
+        self.horiz_measurement=tkinter.Text(measurement_frame, height=1, width=10,
+                                            highlightbackground="blue",
+                                            highlightthickness=1)
+        self.horiz_measurement.grid(row=2, column=0,padx=5, pady=1)
+
+        self.vert_measurement=tkinter.Text(measurement_frame, height=1, width=10,
+                                           highlightbackground="blue",
+                                           highlightthickness=1)
+        self.vert_measurement.grid(row=2, column=1,padx=5, pady=1)
+
 
         self.btn_choose_points=tkinter.Button(config_buttons_frame, text='Choose points', width=self.button_width, command=self.pick_calibration_points)
         self.btn_choose_points.grid(row=1, column=0, padx=5, pady=5)
