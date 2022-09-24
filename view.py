@@ -15,8 +15,8 @@ class View(ttk.Frame):
         self.controller: Controller = None
         self.window_height = 600
         self.window_width = 800
-        self.image_width = 600
-        self.image_height = 500
+        self.display_image_width = 600
+        self.display_image_height = 500
 
         self.button_width = 15
 
@@ -25,8 +25,8 @@ class View(ttk.Frame):
  
 
         imageFrame = tkinter.Frame(self, 
-                                   width = self.image_width,
-                                   height = self.image_height,
+                                   width = self.display_image_width,
+                                   height = self.display_image_height,
                                    highlightbackground="blue",
                                    highlightthickness=1,)
         imageFrame.grid(row = 0, column = 1, padx = 10, pady = 10, rowspan=4)
@@ -61,7 +61,7 @@ class View(ttk.Frame):
                                                                      pady=2,
                                                                      columnspan=3)
 
-        self.canvas = tkinter.Canvas(imageFrame, width = self.image_width, height = self.image_height)
+        self.canvas = tkinter.Canvas(imageFrame, width = self.display_image_width, height = self.display_image_height)
         self.canvas.bind("<Button-1>", self.canvas_click)
         self.canvas.pack()
 
@@ -155,7 +155,7 @@ class View(ttk.Frame):
 
     def get_image_file(self):
         file = tkinter.filedialog.askopenfilename(parent=self,title='Choose a file', filetypes = (("Image files",
-                                                        "*.png"),
+                                                        "*.*"),
                                                        ("all files",
                                                         "*.*")))
         if self.controller:

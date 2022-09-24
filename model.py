@@ -48,14 +48,22 @@ class Calibration:
         _image = np.array(self.image).astype('uint8')
         #self.image = cv2.resize(_image, self.view_resolution, interpolation=cv2.INTER_CUBIC)
         
+    
     def calculate_dest_points(self, horiz, vert):
-        #1mm = 1px
+        
         h = float(horiz)
         v = float(vert)
-        self.dstPoints = np.float32([(h, 0),
+        
+        aspect_ratio_of_measurement = h/v
+        img_w, _ = self.get_image_size(self.image)
+        
+        self.dest_x = int(img_w)
+        self.dest_y = int(img_w / aspect_ratio_of_measurement)
+        
+        self.dstPoints = np.float32([(self.dest_x, 0),
                                      (0, 0),
-                                     (0, v),
-                                     (h, v)])
+                                     (0, self.dest_y),
+                                     (self.dest_x, self.dest_y)])
         print(self.dstPoints)
         
 
@@ -68,8 +76,8 @@ class Calibration:
         return self.perspectiveTransformMatrix
 
     def topDown(self):
-        w, h = self.image.shape[:2]
-        unwarped_image = cv2.warpPerspective(self.image, self.perspectiveTransformMatrix, (w, h), flags=cv2.INTER_LINEAR)
+        #w, h = self.image.shape[:2]
+        unwarped_image = cv2.warpPerspective(self.image, self.perspectiveTransformMatrix, (self.dest_y, self.dest_x), flags=cv2.INTER_LINEAR)
 
         if self.testing:
             f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 10))

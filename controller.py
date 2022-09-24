@@ -44,31 +44,35 @@ class Controller:
          for button in self.view.calibration_buttons:
             button["state"] = "disabled"
 
+    def set_display_image(self, image):
+        self.display_image = np.copy(image)
+        self.scale_display_image()
+        self.show_image(self.display_image)
+
     def set_image_file(self, file):
 
         self.model.image_path_to_cv(file)
         self.model.image_path = file
         print(self.model.image_path)
-        self.display_image = np.copy(self.model.image)
-        self.scale_display_image()
-        self.show_image(self.display_image)
+        self.set_display_image(self.model.image)
         self.view.btn_choose_points["state"] = "normal"
         self.view.btn_load_calib["state"] = "normal"
         self.messagebox.show(f"File: {self.model.image_path} loaded.")
 
     def scale_display_image(self):
-        width, height = self.model.get_image_size(self.display_image)
+        height, width = self.model.get_image_size(self.model.image)
         self.messagebox.show(f"display image width: {width}")
         self.messagebox.show(f"display image height: {height}")
 
-        scale_h = self.view.image_height / height
-        self.display_image_scale = scale_w = scale_h
+        aspect_ratio_of_image = width / height
+        
+        new_width = int(self.view.display_image_height * aspect_ratio_of_image)
+        new_height = self.view.display_image_height
 
-        new_width = int(scale_w * width)
-        new_height = int(scale_h * height)
+        self.display_image_scale = height / new_height
 
         self.messagebox.show(f"display image scaled to: {new_width} X {new_height}")
-        self.display_image = cv2.resize(self.display_image, (new_height, new_width), interpolation=cv2.INTER_CUBIC)
+        self.display_image = cv2.resize(self.display_image, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
 
 
     def cvimage_to_image(self, cv_image):
@@ -115,13 +119,14 @@ class Controller:
             
             rescaled_points = self.rescale_picked_points(self.gathered_points)
             self.model.srcPoints = rescaled_points
+            self.messagebox.show(f"Source points: {self.model.srcPoints}")
 
     def rescale_picked_points(self, point_list):
         rescaled_list = []
         for point in point_list:
             x, y = point
-            x = x * 1/self.display_image_scale
-            y = y * 1/self.display_image_scale
+            x = x * self.display_image_scale
+            y = y * self.display_image_scale
 
             rescaled_list.append((x,y))
         return rescaled_list
@@ -132,12 +137,13 @@ class Controller:
         self.model.calculate_dest_points(self.view.horiz_measurement.get("1.0",'end-1c'),
                                          self.view.vert_measurement.get("1.0",'end-1c'))
         matrix = self.model.setTopDownMatrix()
-        self.messagebox.show(f"Perspective transformation matrix: {matrix}")
+        #self.messagebox.show(f"Perspective transformation matrix: {matrix}")
         self.model.topDown()
-        self.show_image(self.model.top_down_image)
+        self.set_display_image(self.model.top_down_image)
         self.gathered_points = []
         self.view.btn_top_down["state"] = "disabled"
         self.messagebox.show("Top Down correction done.")
+        self.messagebox.show(f"destination points: {self.model.dstPoints}")
 
     def canvas_click(self, event):
 
