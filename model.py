@@ -1,7 +1,7 @@
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
-
+import ezdxf
 
 class Calibration:
 
@@ -19,6 +19,8 @@ class Calibration:
 
         self.testing = False
         self.top_down_image = None
+        
+        self.detected_contours = None
 
         
     def __repr__(self) -> str:
@@ -48,7 +50,32 @@ class Calibration:
         _image = np.array(self.image).astype('uint8')
         #self.image = cv2.resize(_image, self.view_resolution, interpolation=cv2.INTER_CUBIC)
         
+    def contour_detection(self):
+        canny = cv2.Canny(self.top_down_image, 255, 0)
+        self.detected_contours, hierarchy = cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        contours_draw = cv2.drawContours(self.top_down_image, self.detected_contours, -1, (0, 255, 0), 4)
     
+    def dxf_generate(self):
+        dwg = ezdxf.new("R2000")
+        msp = dwg.modelspace()
+        dwg.layers.new(name="greeny green lines", dxfattribs={"color": 3})
+
+        squeezed = [np.squeeze(cnt, axis=1) for cnt in self.detected_contours]
+
+        for ctr in squeezed:
+            points = ctr
+            msp.add_lwpolyline(points)      
+            
+            # for n in range(len(ctr)):
+            #     if n >= len(ctr) - 1:
+            #         n = 0
+            #     try:
+            #         msp.add_line(ctr[n], ctr[n + 1], dxfattribs={"layer": "greeny green lines", "lineweight": 20})
+            #     except IndexError:
+            #         pass
+
+        dwg.saveas("output.dxf")
+
     def calculate_dest_points(self, horiz, vert):
         
         h = float(horiz)

@@ -29,7 +29,7 @@ class View(ttk.Frame):
                                    height = self.display_image_height,
                                    highlightbackground="blue",
                                    highlightthickness=1,)
-        imageFrame.grid(row = 0, column = 1, padx = 10, pady = 10, rowspan=4)
+        imageFrame.grid(row = 0, column = 1, padx = 10, pady = 10, rowspan=5)
 
         load_image_buttons_frame = tkinter.Frame(self, width = 200, height = 100,
                                                  highlightbackground="blue",
@@ -56,6 +56,16 @@ class View(ttk.Frame):
                                              highlightthickness=1)
         config_buttons_frame.grid(row = 2, column = 0, padx= 10, pady = 10)
         tkinter.Label(config_buttons_frame, text="Calibration").grid(row=0, 
+                                                                     column=0,
+                                                                     padx=10,
+                                                                     pady=2,
+                                                                     columnspan=3)
+        
+        dxf_buttons_frame = tkinter.Frame(self, width = 200, height = 100, 
+                                             highlightbackground="blue", 
+                                             highlightthickness=1)
+        dxf_buttons_frame.grid(row = 3, column = 0, padx= 10, pady = 10)
+        tkinter.Label(dxf_buttons_frame, text="DXF").grid(row=0, 
                                                                      column=0,
                                                                      padx=10,
                                                                      pady=2,
@@ -105,16 +115,29 @@ class View(ttk.Frame):
         self.btn_save_calib=tkinter.Button(config_buttons_frame, text='Save Calibration', width=self.button_width, command=self.save_calibration)
         self.btn_save_calib.grid(row=2, column=1, padx=5, pady=5)
 
+        self.btn_contour_detect=tkinter.Button(dxf_buttons_frame, text='Contour', width=self.button_width, command=self.detect_contour)
+        self.btn_contour_detect.grid(row=2, column=0, padx=5, pady=5)
+
+        self.btn_dxf=tkinter.Button(dxf_buttons_frame, text='dxf', width=self.button_width, command=self.save_dxf)
+        self.btn_dxf.grid(row=2, column=1, padx=5, pady=5)
+
 
         self.calibration_buttons = [self.btn_choose_points, self.btn_top_down, self.btn_load_calib, self.btn_save_calib]
         
         self.messagebox = tkinter.Text(self, height = 10, width = 50)
-        self.messagebox.grid(row=3, column=0, padx=5, pady=5)
+        self.messagebox.grid(row=4, column=0, padx=5, pady=5)
         self.messagebox.bind("<1>", lambda event: self.messagebox.focus_set())
         #self.vsb = tkinter.Scrollbar(self, orient="vertical", command=self.messagebox.yview)
         #self.messagebox.configure(yscrollcommand=self.vsb.set)
         #self.vsb.grid(column=0, row=2, rowspan=1, sticky="NSW")
 
+    def detect_contour(self):
+        if self.controller:
+            self.controller.detect_contours()
+    
+    def save_dxf(self):
+        if self.controller:
+            self.controller.save_dxf()
         
     def load_calibration(self):
         file = tkinter.filedialog.askopenfilename(parent=self,title='Choose a configuration file', 

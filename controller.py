@@ -29,6 +29,13 @@ class Controller:
         self.gathered_points = []
         self.disable_buttons()
         
+    def detect_contours(self):
+        self.model.contour_detection()
+        self.set_display_image(self.model.top_down_image)
+        
+        
+    def save_dxf(self):
+        self.model.dxf_generate()
 
     def save_calibration_file(self):
         self.model.save_calibration("calibration.xml")
