@@ -149,8 +149,15 @@ class View(ttk.Frame):
 
 
     def save_calibration(self):
+        
+        files = [('All Files', '*.*'), 
+                 ('XML File', '*.xml')]
+                 
+        filename = tkinter.filedialog.asksaveasfilename(filetypes = files, defaultextension = files[1])
+        
         if self.controller:
-            self.controller.save_calibration_file()
+            self.controller.save_calibration_file(filename)
+            
 
 
     def set_controller(self, controller: Controller):

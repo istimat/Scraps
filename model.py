@@ -28,13 +28,13 @@ class Calibration:
 
     def save_calibration(self, filename):
         cv_file = cv2.FileStorage(filename, cv2.FILE_STORAGE_WRITE)
-        cv_file.write("my_matrix", self.perspectiveTransformMatrix)
+        cv_file.write("transformation_matrix", self.perspectiveTransformMatrix)
         cv_file.release()
 
     def read_calibration(self, filename):
         self.calibration_file = filename
         cv_file = cv2.FileStorage(filename, cv2.FILE_STORAGE_READ)
-        matrix = cv_file.getNode("my_matrix").mat()
+        matrix = cv_file.getNode("transformation_matrix").mat()
         print("read matrix\n", matrix)
         self.perspectiveTransformMatrix = matrix
         cv_file.release()
@@ -55,13 +55,17 @@ class Calibration:
         self.detected_contours, hierarchy = cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         contours_draw = cv2.drawContours(self.top_down_image, self.detected_contours, -1, (0, 255, 0), 2)
     
-    def dxf_generate(self):
+    def dxf_generate(self, horiz_meas, vert_meas):
+        h = int(horiz_meas)
+        v = int(vert_meas)
         dwg = ezdxf.new("R2000")
         msp = dwg.modelspace()
-        dwg.layers.new(name="greeny green lines", dxfattribs={"color": 3})
+        dwg.layers.new(name="detected contours", dxfattribs={"color": 3})
 
         squeezed = [np.squeeze(cnt, axis=1) for cnt in self.detected_contours]
 
+        msp.add_lwpolyline([(0, 0),(0, h),(v, h),(v, 0)])
+        
         for ctr in squeezed:
             points = ctr
             msp.add_lwpolyline(points)      

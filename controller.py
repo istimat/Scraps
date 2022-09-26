@@ -35,10 +35,14 @@ class Controller:
         
         
     def save_dxf(self):
-        self.model.dxf_generate()
+        self.model.dxf_generate(self.view.horiz_measurement.get("1.0",'end-1c'),
+                                self.view.vert_measurement.get("1.0",'end-1c'))
+        self.messagebox.show(f"DXF file saved!")
+        
 
-    def save_calibration_file(self):
-        self.model.save_calibration("calibration.xml")
+    def save_calibration_file(self, filename):
+        self.model.save_calibration(filename)
+        self.messagebox.show(f"Calibration file {filename} saved.")
 
 
     def load_calibration_file(self, file):
