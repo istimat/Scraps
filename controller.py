@@ -53,7 +53,7 @@ class Controller:
 
     def set_display_image(self, image):
         self.display_image = np.copy(image)
-        self.scale_display_image()
+        self.scale_display_image(image)
         self.show_image(self.display_image)
 
     def set_image_file(self, file):
@@ -66,8 +66,8 @@ class Controller:
         self.view.btn_load_calib["state"] = "normal"
         self.messagebox.show(f"File: {self.model.image_path} loaded.")
 
-    def scale_display_image(self):
-        height, width = self.model.get_image_size(self.model.image)
+    def scale_display_image(self, image):
+        height, width = self.model.get_image_size(image)
         self.messagebox.show(f"display image width: {width}")
         self.messagebox.show(f"display image height: {height}")
 
@@ -126,7 +126,7 @@ class Controller:
             
             rescaled_points = self.rescale_picked_points(self.gathered_points)
             self.model.srcPoints = rescaled_points
-            self.messagebox.show(f"Source points: {self.model.srcPoints}")
+            self.messagebox.show(f"Source points: \n {self.model.srcPoints}")
 
     def rescale_picked_points(self, point_list):
         rescaled_list = []

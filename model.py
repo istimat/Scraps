@@ -51,9 +51,9 @@ class Calibration:
         #self.image = cv2.resize(_image, self.view_resolution, interpolation=cv2.INTER_CUBIC)
         
     def contour_detection(self):
-        canny = cv2.Canny(self.top_down_image, 255, 0)
+        canny = cv2.Canny(self.top_down_image, 100, 200)
         self.detected_contours, hierarchy = cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-        contours_draw = cv2.drawContours(self.top_down_image, self.detected_contours, -1, (0, 255, 0), 4)
+        contours_draw = cv2.drawContours(self.top_down_image, self.detected_contours, -1, (0, 255, 0), 2)
     
     def dxf_generate(self):
         dwg = ezdxf.new("R2000")
@@ -82,10 +82,10 @@ class Calibration:
         v = float(vert)
         
         aspect_ratio_of_measurement = h/v
-        img_w, _ = self.get_image_size(self.image)
+        _, img_h = self.get_image_size(self.image)
         
-        self.dest_x = int(img_w)
-        self.dest_y = int(img_w / aspect_ratio_of_measurement)
+        self.dest_x = int(img_h)
+        self.dest_y = int(img_h / aspect_ratio_of_measurement)
         
         self.dstPoints = np.float32([(self.dest_x, 0),
                                      (0, 0),
@@ -104,7 +104,7 @@ class Calibration:
 
     def topDown(self):
         #w, h = self.image.shape[:2]
-        unwarped_image = cv2.warpPerspective(self.image, self.perspectiveTransformMatrix, (self.dest_y, self.dest_x), flags=cv2.INTER_LINEAR)
+        unwarped_image = cv2.warpPerspective(self.image, self.perspectiveTransformMatrix, (self.dest_x, self.dest_y), flags=cv2.INTER_LINEAR)
 
         if self.testing:
             f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 10))

@@ -15,7 +15,7 @@ class View(ttk.Frame):
         self.controller: Controller = None
         self.window_height = 600
         self.window_width = 800
-        self.display_image_width = 600
+        self.display_image_width = 750
         self.display_image_height = 500
 
         self.button_width = 15
