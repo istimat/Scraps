@@ -1,3 +1,5 @@
+from tokenize import String
+from typing import Tuple
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
@@ -22,16 +24,27 @@ class Calibration:
         
         self.detected_contours = None
 
-        
-    def __repr__(self) -> str:
-        return f"{self.image_path!r}"
+    
 
-    def save_calibration(self, filename):
+    def save_calibration(self, filename: str):
+        
+        """saves transformation matrix to xml file.
+
+        Args:
+            filename (str): full path and file name.
+        """
         cv_file = cv2.FileStorage(filename, cv2.FILE_STORAGE_WRITE)
         cv_file.write("transformation_matrix", self.perspectiveTransformMatrix)
         cv_file.release()
 
-    def read_calibration(self, filename):
+
+    def read_calibration(self, filename: str):
+        
+        """loads transformation matrix from xml file.
+
+        Args:
+            filename (str): full path and file name.
+        """
         self.calibration_file = filename
         cv_file = cv2.FileStorage(filename, cv2.FILE_STORAGE_READ)
         matrix = cv_file.getNode("transformation_matrix").mat()
@@ -40,22 +53,49 @@ class Calibration:
         cv_file.release()
 
 
-    def get_image_size(self, image):
+    def get_image_size(self, image: cv2.Mat) -> Tuple[str, str]:
+        
+        """Gets the image size of a cv2 image matrix
+
+        Args:
+            image (cv2.Mat): cv2 image matrix
+
+        Returns:
+            (str, str): width and height of image
+        """
         w, h = image.shape[:2]
         return w, h
 
-    def image_path_to_cv(self, image_path):
 
-        self.image = cv2.imread(image_path)
-        _image = np.array(self.image).astype('uint8')
-        #self.image = cv2.resize(_image, self.view_resolution, interpolation=cv2.INTER_CUBIC)
+    def convert_image_to_cv(self, image_path: str):
         
-    def contour_detection(self):
-        canny = cv2.Canny(self.top_down_image, 100, 200)
-        self.detected_contours, hierarchy = cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-        contours_draw = cv2.drawContours(self.top_down_image, self.detected_contours, -1, (0, 255, 0), 2)
+        """Reads an image and creates a cv2 image matrix
+
+        Args:
+            image_path (str): path to image
+        """
+        self.image = cv2.imread(image_path)
+
+        
+    def contour_detection(self, image: cv2.Mat):
+        """Draws canny detection contours on given image. 
+
+        Args:
+            image (cv2.Mat): cv2 image matrix
+        """
+        
+        canny = cv2.Canny(image, 100, 200)
+        self.detected_contours, _ = cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        _ = cv2.drawContours(image, self.detected_contours, -1, (0, 255, 0), 2)
     
-    def dxf_generate(self, horiz_meas, vert_meas):
+    def dxf_generate(self, horiz_meas: str, vert_meas: str):
+        """generates dxf file based on previously detected canny edges
+
+        Args:
+            horiz_meas (str): horizontal measurement between calibration points
+            vert_meas (str): vertical measurement between calibration points
+        """
+        
         h = int(horiz_meas)
         v = int(vert_meas)
         dwg = ezdxf.new("R2000")
@@ -80,10 +120,18 @@ class Calibration:
 
         dwg.saveas("output.dxf")
 
-    def calculate_dest_points(self, horiz, vert):
+    def calculate_dest_points(self, horiz_meas: str, vert_meas: str):
+        """determines the destination points coordinates for top-down matrix calculation
+           Uses the height of the original image and the aspect ratio of measurements
+           to determine size of final image.
+
+        Args:
+            horiz_meas (str): horizontal measurement between calibration points
+            vert_meas (str): vertical measurement between calibration points
+        """
         
-        h = float(horiz)
-        v = float(vert)
+        h = float(horiz_meas)
+        v = float(vert_meas)
         
         aspect_ratio_of_measurement = h/v
         _, img_h = self.get_image_size(self.image)
@@ -95,10 +143,15 @@ class Calibration:
                                      (0, 0),
                                      (0, self.dest_y),
                                      (self.dest_x, self.dest_y)])
-        print(self.dstPoints)
         
 
-    def setTopDownMatrix(self):
+    def setTopDownMatrix(self) -> cv2.Mat:
+        """calculates the top down transformation matrix based on source points 
+        and destination points
+
+        Returns:
+            cv2.Mat: perspective transform matrix
+        """
         self.srcPoints = np.asarray(self.srcPoints, np.float32)
 
         if self.perspectiveTransformMatrix is None:
@@ -107,8 +160,11 @@ class Calibration:
         return self.perspectiveTransformMatrix
 
     def topDown(self):
-        #w, h = self.image.shape[:2]
-        unwarped_image = cv2.warpPerspective(self.image, self.perspectiveTransformMatrix, (self.dest_x, self.dest_y), flags=cv2.INTER_LINEAR)
+        """applies the transformation matrix onto the cv2 image.
+            ideally creates a top down corrected view.
+        """
+        unwarped_image = cv2.warpPerspective(self.image, self.perspectiveTransformMatrix,
+                                             (self.dest_x, self.dest_y), flags=cv2.INTER_LINEAR)
 
         if self.testing:
             f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 10))
@@ -127,21 +183,4 @@ class Calibration:
         self.top_down_image = unwarped_image
 
 
-    def pick_point(self, cvimage):
 
-        gathered_point = None
-
-        def click_event(event, x, y, flags, params):
-        
-            if event == cv2.EVENT_LBUTTONDOWN:
-                print(x, ' ',y)
-                gathered_point = (float(x), float(y))
-                
-        cv2.setMouseCallback('image', click_event)
-
-        cv2.waitKey(0)
-
-        print(f"Gathered point: {gathered_point}")    
-        
-
-        return cvimage, self.srcPoints

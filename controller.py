@@ -30,7 +30,7 @@ class Controller:
         self.disable_buttons()
         
     def detect_contours(self):
-        self.model.contour_detection()
+        self.model.contour_detection(self.model.top_down_image)
         self.set_display_image(self.model.top_down_image)
         
         
@@ -62,7 +62,7 @@ class Controller:
 
     def set_image_file(self, file):
 
-        self.model.image_path_to_cv(file)
+        self.model.convert_image_to_cv(file)
         self.model.image_path = file
         print(self.model.image_path)
         self.set_display_image(self.model.image)
