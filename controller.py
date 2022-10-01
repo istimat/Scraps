@@ -30,8 +30,13 @@ class Controller:
         self.disable_buttons()
         
     def detect_contours(self):
-        self.model.contour_detection(self.model.top_down_image)
-        self.set_display_image(self.model.top_down_image)
+        min_thresh = self.view.min_thresh.get()
+        max_thresh = self.view.max_thresh.get()
+        self.model.contour_detection(self.model.top_down_image,
+                                     min_thresh,
+                                     max_thresh)
+        self.set_display_image(self.model.image_with_contours)
+        self.messagebox.show(f"Edge detection run with minimun threshold {min_thresh} and maximum {max_thresh}")
         
         
     def save_dxf(self):

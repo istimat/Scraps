@@ -23,6 +23,7 @@ class Calibration:
         self.top_down_image = None
         
         self.detected_contours = None
+        self.image_with_contours = None
 
     
 
@@ -77,16 +78,19 @@ class Calibration:
         self.image = cv2.imread(image_path)
 
         
-    def contour_detection(self, image: cv2.Mat):
+    def contour_detection(self, image: cv2.Mat, min_thresh: int, max_thresh: int):
         """Draws canny detection contours on given image. 
 
         Args:
             image (cv2.Mat): cv2 image matrix
         """
+        image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        blurred = cv2.GaussianBlur(image_gray, (11, 11), 0)
         
-        canny = cv2.Canny(image, 100, 200)
+        canny = cv2.Canny(blurred, min_thresh, max_thresh)
         self.detected_contours, _ = cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-        _ = cv2.drawContours(image, self.detected_contours, -1, (0, 255, 0), 2)
+        self.image_with_contours = np.copy(image)
+        _ = cv2.drawContours(self.image_with_contours, self.detected_contours, -1, (0, 255, 0), 2)
     
     def dxf_generate(self, horiz_meas: str, vert_meas: str):
         """generates dxf file based on previously detected canny edges

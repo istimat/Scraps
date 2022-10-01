@@ -13,7 +13,7 @@ class View(ttk.Frame):
         super().__init__(parent)
         
         self.controller: Controller = None
-        self.window_height = 600
+        self.window_height = 800
         self.window_width = 800
         self.display_image_width = 750
         self.display_image_height = 500
@@ -29,7 +29,7 @@ class View(ttk.Frame):
                                    height = self.display_image_height,
                                    highlightbackground="blue",
                                    highlightthickness=1,)
-        imageFrame.grid(row = 0, column = 1, padx = 10, pady = 10, rowspan=5)
+        imageFrame.grid(row = 0, column = 1, padx = 10, pady = 10, rowspan=4)
 
         load_image_buttons_frame = tkinter.Frame(self, width = 200, height = 100,
                                                  highlightbackground="blue",
@@ -64,21 +64,24 @@ class View(ttk.Frame):
         dxf_buttons_frame = tkinter.Frame(self, width = 200, height = 100, 
                                              highlightbackground="blue", 
                                              highlightthickness=1)
-        dxf_buttons_frame.grid(row = 3, column = 0, padx= 10, pady = 10)
-        tkinter.Label(dxf_buttons_frame, text="DXF").grid(row=0, 
+        dxf_buttons_frame.grid(row = 3, column = 0, padx= 10, pady = 10, rowspan=2)
+        tkinter.Label(dxf_buttons_frame, text="DXF").grid(row=0,
                                                                      column=0,
                                                                      padx=10,
                                                                      pady=2,
                                                                      columnspan=3)
 
-        self.canvas = tkinter.Canvas(imageFrame, width = self.display_image_width, height = self.display_image_height)
+        self.canvas = tkinter.Canvas(imageFrame, width = self.display_image_width, 
+                                                 height = self.display_image_height)
         self.canvas.bind("<Button-1>", self.canvas_click)
         self.canvas.pack()
 
-        self.btn_blur=tkinter.Button(load_image_buttons_frame, text="Blur", width=self.button_width, command=self.blur_image)
+        self.btn_blur=tkinter.Button(load_image_buttons_frame, text="Blur",
+                                     width=self.button_width, command=self.blur_image)
         self.btn_blur.grid(row=1, column=0, padx=5, pady=5)
 
-        self.btn_get_image=tkinter.Button(load_image_buttons_frame, text="Browse", width=self.button_width, command=self.get_image_file)
+        self.btn_get_image=tkinter.Button(load_image_buttons_frame, text="Browse",
+                                          width=self.button_width, command=self.get_image_file)
         self.btn_get_image.grid(row=1, column=2, padx=5, pady=5)
 
         tkinter.Label(measurement_frame, text="Horizontal").grid(row=1, 
@@ -118,14 +121,20 @@ class View(ttk.Frame):
         self.btn_contour_detect=tkinter.Button(dxf_buttons_frame, text='Contour', width=self.button_width, command=self.detect_contour)
         self.btn_contour_detect.grid(row=2, column=0, padx=5, pady=5)
 
-        self.btn_dxf=tkinter.Button(dxf_buttons_frame, text='dxf', width=self.button_width, command=self.save_dxf)
+        self.btn_dxf=tkinter.Button(dxf_buttons_frame, text='Save DXF', width=self.button_width, command=self.save_dxf)
         self.btn_dxf.grid(row=2, column=1, padx=5, pady=5)
 
+        self.min_thresh = tkinter.Scale(dxf_buttons_frame, from_=0, to=255, orient=tkinter.HORIZONTAL, length=180)
+        self.min_thresh.grid(row=3, column=0, columnspan=2)
+        self.min_thresh.set(100)
+        self.max_thresh = tkinter.Scale(dxf_buttons_frame, from_=0, to=255, orient=tkinter.HORIZONTAL, length=180)
+        self.max_thresh.grid(row=4, column=0, columnspan=2)
+        self.max_thresh.set(200)
 
         self.calibration_buttons = [self.btn_choose_points, self.btn_top_down, self.btn_load_calib, self.btn_save_calib]
         
-        self.messagebox = tkinter.Text(self, height = 10, width = 50)
-        self.messagebox.grid(row=4, column=0, padx=5, pady=5)
+        self.messagebox = tkinter.Text(self, height = 10, width = 105)
+        self.messagebox.grid(row=4, column=1, padx=5, pady=5)
         self.messagebox.bind("<1>", lambda event: self.messagebox.focus_set())
         #self.vsb = tkinter.Scrollbar(self, orient="vertical", command=self.messagebox.yview)
         #self.messagebox.configure(yscrollcommand=self.vsb.set)
