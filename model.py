@@ -111,16 +111,19 @@ class Calibration:
         dwg.layers.new(name="detected contours", dxfattribs={"color": 3})
 
         squeezed = [np.squeeze(cnt, axis=1) for cnt in self.detected_contours]
+        #inversion mirrors along the horizontal axis
+        inverted_squeezed = [arr * [1, -1] for arr in squeezed]
 
         msp.add_lwpolyline([(0, 0),(h, 0),(h, v),(0, v),(0, 0)])
         
-        for ctr in squeezed:
+        for ctr in inverted_squeezed:
             points = ctr
             scaled_points = []
             for point in points:
                 x, y = point
                 scaled_x = x * x_scale
-                scaled_y = y * y_scale
+                # + v because after mirroring drawing needs to be shifted upwards.
+                scaled_y = y * y_scale + v
                 scaled_points.append((scaled_x, scaled_y))
                 
             msp.add_lwpolyline(scaled_points)      
