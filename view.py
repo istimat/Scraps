@@ -74,6 +74,7 @@ class View(ttk.Frame):
         self.canvas = tkinter.Canvas(imageFrame, width = self.display_image_width, 
                                                  height = self.display_image_height)
         self.canvas.bind("<Button-1>", self.canvas_click)
+        self.canvas.bind("<Motion>", self.moved)
         self.canvas.pack()
 
         self.btn_blur=tkinter.Button(load_image_buttons_frame, text="Blur",
@@ -155,9 +156,14 @@ class View(ttk.Frame):
         self.messagebox = tkinter.Text(self, height = 10, width = 105)
         self.messagebox.grid(row=4, column=1, padx=5, pady=5)
         self.messagebox.bind("<1>", lambda event: self.messagebox.focus_set())
-        #self.vsb = tkinter.Scrollbar(self, orient="vertical", command=self.messagebox.yview)
-        #self.messagebox.configure(yscrollcommand=self.vsb.set)
-        #self.vsb.grid(column=0, row=2, rowspan=1, sticky="NSW")
+
+
+
+
+    def moved(self, event):
+        pass
+        #print(f"{event.x}, {event.y}")
+
 
     def detect_contour(self):
         if self.controller:
