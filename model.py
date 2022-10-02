@@ -128,14 +128,6 @@ class Calibration:
                 
             msp.add_lwpolyline(scaled_points)      
             
-            # for n in range(len(ctr)):
-            #     if n >= len(ctr) - 1:
-            #         n = 0
-            #     try:
-            #         msp.add_line(ctr[n], ctr[n + 1], dxfattribs={"layer": "greeny green lines", "lineweight": 20})
-            #     except IndexError:
-            #         pass
-
         dwg.saveas("output.dxf")
 
     def calculate_dest_points(self, horiz_meas: str, vert_meas: str):
