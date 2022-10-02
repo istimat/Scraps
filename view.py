@@ -122,14 +122,33 @@ class View(ttk.Frame):
         self.btn_contour_detect.grid(row=2, column=0, padx=5, pady=5)
 
         self.btn_dxf=tkinter.Button(dxf_buttons_frame, text='Save DXF', width=self.button_width, command=self.save_dxf)
-        self.btn_dxf.grid(row=2, column=1, padx=5, pady=5)
+        self.btn_dxf.grid(row=6, column=0, padx=5, pady=5, columnspan=2)
 
-        self.min_thresh = tkinter.Scale(dxf_buttons_frame, from_=0, to=255, orient=tkinter.HORIZONTAL, length=180)
-        self.min_thresh.grid(row=3, column=0, columnspan=2)
-        self.min_thresh.set(100)
+        self.btn_show_contour=tkinter.Button(dxf_buttons_frame, text='Show Contour', width=self.button_width, command=self.show_contour)
+        self.btn_show_contour.grid(row=2, column=1, padx=5, pady=5)
+
+        self.blur_kernel = tkinter.Scale(dxf_buttons_frame, from_=1, to=30,
+                                         orient=tkinter.HORIZONTAL, length=180)
+        self.blur_kernel.grid(row=3, column=1, columnspan=1)
+        self.blur_kernel.set(11)
+        tkinter.Label(dxf_buttons_frame, text="Blur Kernel:").grid(row=3, 
+                                                                   column=0,
+                                                                   padx=1,
+                                                                   pady=1)
         self.max_thresh = tkinter.Scale(dxf_buttons_frame, from_=0, to=255, orient=tkinter.HORIZONTAL, length=180)
-        self.max_thresh.grid(row=4, column=0, columnspan=2)
+        self.min_thresh = tkinter.Scale(dxf_buttons_frame, from_=0, to=255, orient=tkinter.HORIZONTAL, length=180)
+        self.min_thresh.grid(row=4, column=1, columnspan=1)
+        self.min_thresh.set(100)
+        tkinter.Label(dxf_buttons_frame, text="Max thresh:").grid(row=4, 
+                                                                   column=0,
+                                                                   padx=1,
+                                                                   pady=1)
+        self.max_thresh.grid(row=5, column=1, columnspan=1)
         self.max_thresh.set(200)
+        tkinter.Label(dxf_buttons_frame, text="Min thresh:").grid(row=5, 
+                                                                   column=0,
+                                                                   padx=1,
+                                                                   pady=1)
 
         self.calibration_buttons = [self.btn_choose_points, self.btn_top_down, self.btn_load_calib, self.btn_save_calib]
         
@@ -211,5 +230,9 @@ class View(ttk.Frame):
     def canvas_click(self, event):
         if self.controller:
             self.controller.canvas_click(event)
+            
+    def show_contour(self):
+        if self.controller:
+            self.controller.show_contour()
 
 

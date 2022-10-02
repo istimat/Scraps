@@ -28,11 +28,22 @@ class Controller:
         self.view.vert_measurement.insert(tkinter.END, "400")
         self.gathered_points = []
         self.disable_buttons()
-        
+        self.contour_toggle = False
+    
+    def show_contour(self):
+        if self.contour_toggle == True:
+            self.set_display_image(self.model.image_with_contours)
+            self.contour_toggle = False
+        else:
+            self.set_display_image(self.model.image_only_contours)
+            self.contour_toggle = True
+    
     def detect_contours(self):
         min_thresh = self.view.min_thresh.get()
         max_thresh = self.view.max_thresh.get()
+        blur_kernel = self.view.blur_kernel.get()
         self.model.contour_detection(self.model.top_down_image,
+                                     blur_kernel,
                                      min_thresh,
                                      max_thresh)
         self.set_display_image(self.model.image_with_contours)
