@@ -102,17 +102,28 @@ class Calibration:
         
         h = int(horiz_meas)
         v = int(vert_meas)
+        image_height, image_width = self.get_image_size(self.top_down_image)
+        x_scale = h / image_width
+        y_scale = v / image_height
+        
         dwg = ezdxf.new("R2000")
         msp = dwg.modelspace()
         dwg.layers.new(name="detected contours", dxfattribs={"color": 3})
 
         squeezed = [np.squeeze(cnt, axis=1) for cnt in self.detected_contours]
 
-        msp.add_lwpolyline([(0, 0),(0, h),(v, h),(v, 0)])
+        msp.add_lwpolyline([(0, 0),(h, 0),(h, v),(0, v),(0, 0)])
         
         for ctr in squeezed:
             points = ctr
-            msp.add_lwpolyline(points)      
+            scaled_points = []
+            for point in points:
+                x, y = point
+                scaled_x = x * x_scale
+                scaled_y = y * y_scale
+                scaled_points.append((scaled_x, scaled_y))
+                
+            msp.add_lwpolyline(scaled_points)      
             
             # for n in range(len(ctr)):
             #     if n >= len(ctr) - 1:
