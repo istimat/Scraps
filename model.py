@@ -49,7 +49,7 @@ class Calibration:
         self.calibration_file = filename
         cv_file = cv2.FileStorage(filename, cv2.FILE_STORAGE_READ)
         matrix = cv_file.getNode("transformation_matrix").mat()
-        print("read matrix\n", matrix)
+        #print("read matrix\n", matrix)
         self.perspectiveTransformMatrix = matrix
         cv_file.release()
 

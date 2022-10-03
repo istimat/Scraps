@@ -29,7 +29,7 @@ class View(ttk.Frame):
                                    height = self.display_image_height,
                                    highlightbackground="blue",
                                    highlightthickness=1,)
-        imageFrame.grid(row = 0, column = 1, padx = 10, pady = 10, rowspan=4)
+        imageFrame.grid(row = 0, column = 1, padx = 10, pady = 10, rowspan=5)
 
         load_image_buttons_frame = tkinter.Frame(self, width = 200, height = 100,
                                                  highlightbackground="blue",
@@ -151,17 +151,24 @@ class View(ttk.Frame):
                                                                    padx=1,
                                                                    pady=1)
 
+        self.zoom_window = tkinter.Canvas(self, width = 200,
+                                                height = 200)
+        self.zoom_window.grid(row=5, column=0)
+        #self.zoom_window.pack()
+
+
         self.calibration_buttons = [self.btn_choose_points, self.btn_top_down, self.btn_load_calib, self.btn_save_calib]
         
         self.messagebox = tkinter.Text(self, height = 10, width = 105)
-        self.messagebox.grid(row=4, column=1, padx=5, pady=5)
+        self.messagebox.grid(row=5, column=1, padx=5, pady=5)
         self.messagebox.bind("<1>", lambda event: self.messagebox.focus_set())
 
 
 
 
     def moved(self, event):
-        pass
+        if self.controller:
+            self.controller.update_zoom_image(event)
         #print(f"{event.x}, {event.y}")
 
 
@@ -211,7 +218,6 @@ class View(ttk.Frame):
         self.current_image = new_image
         self.canvas.itemconfig(self.image_id, image = new_image)
         self.canvas.update()
-        print(self.image_id)
 
     # Callback for the "Blur" button
     def blur_image(self):
