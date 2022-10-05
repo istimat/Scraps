@@ -37,19 +37,20 @@ class Controller:
     def show_zoom_image(self, image):
         self.zoom_image = self.cvimage_to_image(image)
         self.zoom_image_id = self.view.zoom_window.create_image(0, 0, image=self.zoom_image, anchor=tkinter.NW)
-        self.crosshair = PIL.ImageTk.PhotoImage(file="data/crosshair_100px.png")
-        self.crosshair_id = self.view.zoom_window.create_image(55,55, anchor=tkinter.NW, image=self.crosshair) 
+        self.crosshair = PIL.ImageTk.PhotoImage(file="data/crosshair_green_100px.png")
+        self.crosshair_id = self.view.zoom_window.create_image(100,100, anchor=tkinter.CENTER, image=self.crosshair) 
         self.view.zoom_window.update()
     
     def update_zoom_image(self, event):
-        x = int(event.x*-self.display_image_scale)+100
-        y = int(event.y*-self.display_image_scale)+100
-        self.view.zoom_window.scan_dragto(x, y, gain=1)
-        self.view.zoom_window.coords(self.crosshair_id, 
-                                     int(event.x*self.display_image_scale-45),
-                                     int(event.y*self.display_image_scale-45))
-        
-        self.view.zoom_window.update()
+        if self.display_image_scale is not None:
+            x = int(event.x*-self.display_image_scale)+100
+            y = int(event.y*-self.display_image_scale)+100
+            self.view.zoom_window.scan_dragto(x, y, gain=1)
+            self.view.zoom_window.coords(self.crosshair_id, 
+                                         int(event.x*self.display_image_scale),
+                                         int(event.y*self.display_image_scale))
+
+            self.view.zoom_window.update()
     
     
     def show_contour(self):
@@ -157,7 +158,7 @@ class Controller:
                 self.gathered_points.append(point)
                 #print(f"Points selected: {self.gathered_points}")
                 cv2.circle(self.display_image_scaled, point, radius=5, color=(0, 0, 255), thickness=-1)
-                cv2.putText(self.display_image_scaled, f"{point[0]} {point[1]}", (point[0],point[1]),cv2.FONT_HERSHEY_SIMPLEX, 1, (0,10,255), 2)
+                cv2.putText(self.display_image_scaled, f"{point[0]} {point[1]}", (point[0],point[1]),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,10,255), 2)
                 self.show_image(self.display_image_scaled)
 
             if len(self.gathered_points) == 4:
