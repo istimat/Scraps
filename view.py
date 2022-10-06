@@ -122,9 +122,6 @@ class View(ttk.Frame):
         self.btn_contour_detect=tkinter.Button(dxf_buttons_frame, text='Contour', width=self.button_width, command=self.detect_contour)
         self.btn_contour_detect.grid(row=2, column=0, padx=5, pady=5)
 
-        self.btn_dxf=tkinter.Button(dxf_buttons_frame, text='Save DXF', width=self.button_width, command=self.save_dxf)
-        self.btn_dxf.grid(row=6, column=0, padx=5, pady=5, columnspan=2)
-
         self.btn_show_contour=tkinter.Button(dxf_buttons_frame, text='Show Contour', width=self.button_width, command=self.show_contour)
         self.btn_show_contour.grid(row=2, column=1, padx=5, pady=5)
 
@@ -150,6 +147,12 @@ class View(ttk.Frame):
                                                                    column=0,
                                                                    padx=1,
                                                                    pady=1)
+        
+        self.btn_dxf_path=tkinter.Button(dxf_buttons_frame, text='Output Path', width=self.button_width, command=self.set_dxf_path)
+        self.btn_dxf_path.grid(row=6, column=0, padx=5, pady=5)
+        
+        self.btn_dxf=tkinter.Button(dxf_buttons_frame, text='Save DXF', width=self.button_width, command=self.save_dxf)
+        self.btn_dxf.grid(row=6, column=1, padx=5, pady=5)
 
         self.zoom_window = tkinter.Canvas(self, width = 200,
                                                 height = 200)
@@ -178,6 +181,12 @@ class View(ttk.Frame):
         blur_kernel = self.blur_kernel.get()
         if self.controller:
             self.controller.detect_contours(min_thresh, max_thresh, blur_kernel)
+    
+    def set_dxf_path(self):
+        path = tkinter.filedialog.askdirectory(parent=self,title='Choose a path to save the dxf file', 
+                                                  initialdir=os.curdir)
+        if self.controller:
+            self.controller.set_dxf_path(path)
     
     def save_dxf(self):
         if self.controller:

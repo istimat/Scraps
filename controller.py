@@ -94,6 +94,10 @@ class Controller:
         
         return self.model.image_with_contours
     
+    def set_dxf_path(self, path: str):
+        
+        self.model.dxf_path = path
+        return path
         
     def save_dxf(self):
         self.model.dxf_generate(self.view.horiz_measurement.get("1.0",'end-1c'),
