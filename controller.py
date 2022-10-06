@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Tuple
 from faulthandler import disable
 import cv2
 import PIL.Image, PIL.ImageTk
@@ -34,14 +35,25 @@ class Controller:
         self.zoom_image = None
     
     
-    def show_zoom_image(self, image):
+    def show_zoom_image(self, image: cv2.Mat) -> Tuple(int, int):
+        """Ahows unscaled image in smaller window, like a magnifying glass
+           Adds a crosshair on top of image
+        """
+           
         self.zoom_image = self.cvimage_to_image(image)
         self.zoom_image_id = self.view.zoom_window.create_image(0, 0, image=self.zoom_image, anchor=tkinter.NW)
         self.crosshair = PIL.ImageTk.PhotoImage(file="data/crosshair_green_100px.png")
         self.crosshair_id = self.view.zoom_window.create_image(100,100, anchor=tkinter.CENTER, image=self.crosshair) 
         self.view.zoom_window.update()
+        
+        return self.zoom_image_id, self.crosshair_id
     
-    def update_zoom_image(self, event):
+    def update_zoom_image(self, event: tkinter.Event):
+        """ 
+        Every mouse hover event on large image translates zoomed image
+            Crosshair is translated in the opposite direction
+        """
+        
         if self.display_image_scale is not None:
             x = int(event.x*-self.display_image_scale)+100
             y = int(event.y*-self.display_image_scale)+100
@@ -51,20 +63,28 @@ class Controller:
                                          int(event.y*self.display_image_scale))
 
             self.view.zoom_window.update()
+
     
-    
-    def show_contour(self):
+    def show_contour(self) -> bool:
+        """ 
+        Hides or shows the image underneath the detected contours
+        for better visualization
+        """
+        
         if self.contour_toggle == True:
             self.set_display_image(self.model.image_with_contours)
             self.contour_toggle = False
         else:
             self.set_display_image(self.model.image_only_contours)
             self.contour_toggle = True
+        
+        return self.contour_toggle
     
-    def detect_contours(self):
-        min_thresh = self.view.min_thresh.get()
-        max_thresh = self.view.max_thresh.get()
-        blur_kernel = self.view.blur_kernel.get()
+    def detect_contours(self, min_thresh: int, max_thresh: int, blur_kernel: int) -> cv2.Mat:
+        """ 
+        Detects contours based on threshold values and blur kernel size
+        """
+        
         self.model.contour_detection(self.model.top_down_image,
                                      blur_kernel,
                                      min_thresh,
@@ -72,6 +92,8 @@ class Controller:
         self.set_display_image(self.model.image_with_contours)
         self.messagebox.show(f"Edge detection run with minimun threshold {min_thresh} and maximum {max_thresh}")
         
+        return self.model.image_with_contours
+    
         
     def save_dxf(self):
         self.model.dxf_generate(self.view.horiz_measurement.get("1.0",'end-1c'),
@@ -156,9 +178,8 @@ class Controller:
                 point = self.last_clicked_canvas
                 
                 self.gathered_points.append(point)
-                #print(f"Points selected: {self.gathered_points}")
                 cv2.circle(self.display_image_scaled, point, radius=5, color=(0, 0, 255), thickness=-1)
-                cv2.putText(self.display_image_scaled, f"{point[0]} {point[1]}", (point[0],point[1]),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,10,255), 2)
+                #cv2.putText(self.display_image_scaled, f"{point[0]} {point[1]}", (point[0],point[1]),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,10,255), 2)
                 self.show_image(self.display_image_scaled)
 
             if len(self.gathered_points) == 4:

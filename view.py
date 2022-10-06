@@ -77,13 +77,13 @@ class View(ttk.Frame):
         self.canvas.bind("<Motion>", self.moved)
         self.canvas.pack()
 
-        self.btn_blur=tkinter.Button(load_image_buttons_frame, text="Blur",
-                                     width=self.button_width, command=self.blur_image)
-        self.btn_blur.grid(row=1, column=0, padx=5, pady=5)
+        #self.btn_blur=tkinter.Button(load_image_buttons_frame, text="Blur",
+        #                             width=self.button_width, command=self.blur_image)
+        #self.btn_blur.grid(row=1, column=0, padx=5, pady=5)
 
         self.btn_get_image=tkinter.Button(load_image_buttons_frame, text="Browse",
                                           width=self.button_width, command=self.get_image_file)
-        self.btn_get_image.grid(row=1, column=2, padx=5, pady=5)
+        self.btn_get_image.grid(row=1, column=1, padx=5, pady=5)
 
         tkinter.Label(measurement_frame, text="Horizontal").grid(row=1, 
                                                                    column=0,
@@ -173,8 +173,11 @@ class View(ttk.Frame):
 
 
     def detect_contour(self):
+        min_thresh = self.min_thresh.get()
+        max_thresh = self.max_thresh.get()
+        blur_kernel = self.blur_kernel.get()
         if self.controller:
-            self.controller.detect_contours()
+            self.controller.detect_contours(min_thresh, max_thresh, blur_kernel)
     
     def save_dxf(self):
         if self.controller:

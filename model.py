@@ -175,8 +175,9 @@ class Calibration:
         return self.perspectiveTransformMatrix
 
     def topDown(self):
-        """applies the transformation matrix onto the cv2 image.
-            ideally creates a top down corrected view.
+        """
+        applies the transformation matrix onto the cv2 image.
+        ideally creates a top down corrected view.
         """
         unwarped_image = cv2.warpPerspective(self.image, self.perspectiveTransformMatrix,
                                              (self.dest_x, self.dest_y), flags=cv2.INTER_LINEAR)
