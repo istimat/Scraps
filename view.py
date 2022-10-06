@@ -172,6 +172,7 @@ class View(ttk.Frame):
     def moved(self, event):
         if self.controller:
             self.controller.update_zoom_image(event)
+            
         #print(f"{event.x}, {event.y}")
 
 
@@ -254,6 +255,7 @@ class View(ttk.Frame):
     def canvas_click(self, event):
         if self.controller:
             self.controller.canvas_click(event)
+            self.controller.measure.get_picked_point(event)
             
     def show_contour(self):
         if self.controller:
