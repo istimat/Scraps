@@ -8,7 +8,7 @@ class App(tk.Tk):
         super().__init__()
 
         self.title('Scraps')
-
+        self.testing = True
         # create a model
         model = Calibration()
 
@@ -22,6 +22,10 @@ class App(tk.Tk):
         # set the controller to view
         view.set_controller(controller)
 
+        if self.testing:
+            controller.set_image_file("/Users/istimat/Projects/Scraps/data/IMG_2001.jpeg")
+            controller.load_calibration_file("/Users/istimat/Projects/Scraps/calibration_2001.xml")
+            controller.top_down()
 
 if __name__ == '__main__':
     app = App()

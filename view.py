@@ -106,6 +106,9 @@ class View(ttk.Frame):
                                            highlightthickness=1)
         self.vert_measurement.grid(row=2, column=1,padx=5, pady=1)
 
+        self.btn_measurement=tkinter.Button(measurement_frame, text='Measure', width=self.button_width, command=self.measurement_toggle)
+        self.btn_measurement.grid(row=2, column=3, padx=5, pady=5)
+
 
         self.btn_choose_points=tkinter.Button(config_buttons_frame, text='Choose points', width=self.button_width, command=self.pick_calibration_points)
         self.btn_choose_points.grid(row=1, column=0, padx=5, pady=5)
@@ -175,6 +178,14 @@ class View(ttk.Frame):
             
         #print(f"{event.x}, {event.y}")
 
+    def measurement_toggle(self):
+        if self.controller:
+            state = self.controller.measure.mode_toggle()
+            if state:
+                self.btn_measurement.config(relief=tkinter.SUNKEN)
+            else:
+                self.btn_measurement.config(relief=tkinter.RAISED)
+                
 
     def detect_contour(self):
         min_thresh = self.min_thresh.get()
