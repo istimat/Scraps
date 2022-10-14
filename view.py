@@ -29,7 +29,7 @@ class View(ttk.Frame):
                                    height = self.display_image_height,
                                    highlightbackground="blue",
                                    highlightthickness=1,)
-        imageFrame.grid(row = 0, column = 1, padx = 10, pady = 10, rowspan=4)
+        imageFrame.grid(row = 0, column = 1, padx = 10, pady = 10, rowspan=5)
 
         load_image_buttons_frame = tkinter.Frame(self, width = 200, height = 100,
                                                  highlightbackground="blue",
@@ -77,13 +77,13 @@ class View(ttk.Frame):
         self.canvas.bind("<Motion>", self.moved)
         self.canvas.pack()
 
-        self.btn_blur=tkinter.Button(load_image_buttons_frame, text="Blur",
-                                     width=self.button_width, command=self.blur_image)
-        self.btn_blur.grid(row=1, column=0, padx=5, pady=5)
+        #self.btn_blur=tkinter.Button(load_image_buttons_frame, text="Blur",
+        #                             width=self.button_width, command=self.blur_image)
+        #self.btn_blur.grid(row=1, column=0, padx=5, pady=5)
 
         self.btn_get_image=tkinter.Button(load_image_buttons_frame, text="Browse",
                                           width=self.button_width, command=self.get_image_file)
-        self.btn_get_image.grid(row=1, column=2, padx=5, pady=5)
+        self.btn_get_image.grid(row=1, column=1, padx=5, pady=5)
 
         tkinter.Label(measurement_frame, text="Horizontal").grid(row=1, 
                                                                    column=0,
@@ -122,9 +122,6 @@ class View(ttk.Frame):
         self.btn_contour_detect=tkinter.Button(dxf_buttons_frame, text='Contour', width=self.button_width, command=self.detect_contour)
         self.btn_contour_detect.grid(row=2, column=0, padx=5, pady=5)
 
-        self.btn_dxf=tkinter.Button(dxf_buttons_frame, text='Save DXF', width=self.button_width, command=self.save_dxf)
-        self.btn_dxf.grid(row=6, column=0, padx=5, pady=5, columnspan=2)
-
         self.btn_show_contour=tkinter.Button(dxf_buttons_frame, text='Show Contour', width=self.button_width, command=self.show_contour)
         self.btn_show_contour.grid(row=2, column=1, padx=5, pady=5)
 
@@ -150,24 +147,46 @@ class View(ttk.Frame):
                                                                    column=0,
                                                                    padx=1,
                                                                    pady=1)
+        
+        self.btn_dxf_path=tkinter.Button(dxf_buttons_frame, text='Output Path', width=self.button_width, command=self.set_dxf_path)
+        self.btn_dxf_path.grid(row=6, column=0, padx=5, pady=5)
+        
+        self.btn_dxf=tkinter.Button(dxf_buttons_frame, text='Save DXF', width=self.button_width, command=self.save_dxf)
+        self.btn_dxf.grid(row=6, column=1, padx=5, pady=5)
+
+        self.zoom_window = tkinter.Canvas(self, width = 200,
+                                                height = 200)
+        self.zoom_window.grid(row=5, column=0)
+        #self.zoom_window.pack()
+
 
         self.calibration_buttons = [self.btn_choose_points, self.btn_top_down, self.btn_load_calib, self.btn_save_calib]
         
         self.messagebox = tkinter.Text(self, height = 10, width = 105)
-        self.messagebox.grid(row=4, column=1, padx=5, pady=5)
+        self.messagebox.grid(row=5, column=1, padx=5, pady=5)
         self.messagebox.bind("<1>", lambda event: self.messagebox.focus_set())
 
 
 
 
     def moved(self, event):
-        pass
+        if self.controller:
+            self.controller.update_zoom_image(event)
         #print(f"{event.x}, {event.y}")
 
 
     def detect_contour(self):
+        min_thresh = self.min_thresh.get()
+        max_thresh = self.max_thresh.get()
+        blur_kernel = self.blur_kernel.get()
         if self.controller:
-            self.controller.detect_contours()
+            self.controller.detect_contours(min_thresh, max_thresh, blur_kernel)
+    
+    def set_dxf_path(self):
+        path = tkinter.filedialog.askdirectory(parent=self,title='Choose a path to save the dxf file', 
+                                                  initialdir=os.curdir)
+        if self.controller:
+            self.controller.set_dxf_path(path)
     
     def save_dxf(self):
         if self.controller:
@@ -211,7 +230,6 @@ class View(ttk.Frame):
         self.current_image = new_image
         self.canvas.itemconfig(self.image_id, image = new_image)
         self.canvas.update()
-        print(self.image_id)
 
     # Callback for the "Blur" button
     def blur_image(self):

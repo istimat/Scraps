@@ -13,6 +13,7 @@ class Calibration:
 
         self.calibration_file = None
         self.perspectiveTransformMatrix = None
+        self.dxf_path = None
 
         self.unwarped_image = None
         self.perspectiveTransform = None
@@ -49,7 +50,7 @@ class Calibration:
         self.calibration_file = filename
         cv_file = cv2.FileStorage(filename, cv2.FILE_STORAGE_READ)
         matrix = cv_file.getNode("transformation_matrix").mat()
-        print("read matrix\n", matrix)
+        #print("read matrix\n", matrix)
         self.perspectiveTransformMatrix = matrix
         cv_file.release()
 
@@ -132,8 +133,10 @@ class Calibration:
                 scaled_points.append((scaled_x, scaled_y))
                 
             msp.add_lwpolyline(scaled_points)      
-            
-        dwg.saveas("output.dxf")
+        if self.dxf_path is not None:    
+            dwg.saveas(f"{self.dxf_path}/output.dxf")
+        else:
+            dwg.saveas("output.dxf")
 
     def calculate_dest_points(self, horiz_meas: str, vert_meas: str):
         """determines the destination points coordinates for top-down matrix calculation
@@ -175,8 +178,9 @@ class Calibration:
         return self.perspectiveTransformMatrix
 
     def topDown(self):
-        """applies the transformation matrix onto the cv2 image.
-            ideally creates a top down corrected view.
+        """
+        applies the transformation matrix onto the cv2 image.
+        ideally creates a top down corrected view.
         """
         unwarped_image = cv2.warpPerspective(self.image, self.perspectiveTransformMatrix,
                                              (self.dest_x, self.dest_y), flags=cv2.INTER_LINEAR)
