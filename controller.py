@@ -287,7 +287,6 @@ class Measure:
         cv2.circle(image, points[-1], radius=5, color=(0, 0, 255), thickness=-1)
         if len(points) > 1:
             cv2.line(image, points[-1], points[-2], (0, 255, 0), 2, 1)
-            cv2.getTextSize()
             midpoint = self.calculate_half_way_point(points[-1],points[-2])
             cv2.putText(image, f"{distance:.1f} mm",
                                  midpoint,
