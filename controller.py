@@ -287,12 +287,23 @@ class Measure:
         cv2.circle(image, points[-1], radius=5, color=(0, 0, 255), thickness=-1)
         if len(points) > 1:
             cv2.line(image, points[-1], points[-2], (0, 255, 0), 2, 1)
+            cv2.getTextSize()
+            midpoint = self.calculate_half_way_point(points[-1],points[-2])
             cv2.putText(image, f"{distance:.1f} mm",
-                                 (points[-1]),
+                                 midpoint,
                                  cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,10,255), 2)
             self.controller.messagebox.show(f"Last measurement = {distance:.1f} mm")
         self.controller.show_image(image)
-            
+    
+    @staticmethod
+    def calculate_half_way_point(point_a: Tuple, point_b: Tuple) -> Tuple:
+        x1, y1 = point_a
+        x2, y2 = point_b
+        
+        x = (x1 + x2)/2
+        y = (y1 + y2)/2
+
+        return (int(x), int(y))
     
     def calculate_measurement(self):
         if len(self.measurement_points) > 1:
