@@ -1,10 +1,12 @@
 from __future__ import annotations
+from symbol import yield_expr
 from typing import Tuple
 from faulthandler import disable
 import cv2
 import PIL.Image, PIL.ImageTk
 import numpy as np
 import tkinter
+import math
 
 #trick to avoid circular import but allow type hinting for intellisence
 from typing import TYPE_CHECKING
@@ -18,6 +20,8 @@ class Controller:
         self.model = model
         self.view = view
         self.messagebox = MessageBox(view)
+        self.measure = Measure(self, view, model)
+        
         self.cvimage = model.image
         self.display_image = np.copy(self.cvimage)
         self.display_image_scaled = None
@@ -234,3 +238,95 @@ class MessageBox:
         self.view.messagebox.insert(tkinter.END, f"{message} \n")
         self.view.messagebox.see("end")
         self.view.messagebox.configure(state="disabled")
+
+class Measure:
+    def __init__(self, controller: Controller, view: View, model: Calibration) -> None:
+        self.controller = controller
+        self.view = view
+        self.model = model
+        self.measuring = False
+        self.picked_points = []
+        self.measurement_points = []
+        self.image_with_measurement = None
+        
+    def mode_toggle(self):
+        if not self.measuring:
+            self.measuring = True
+            self.image_with_measurement =  np.copy(self.controller.display_image_scaled)
+            self.controller.show_image(self.image_with_measurement)
+            self.controller.messagebox.show(f"Measurement mode on!")
+        else:
+            self.measuring = False
+            self.controller.show_image(self.controller.display_image_scaled)
+            self.reset_measurement()
+            self.controller.messagebox.show(f"Measurement mode off!")
+    
+    def reset_measurement(self):
+        self.picked_points = []
+        self.measurement_points = []
+        self.image_with_measurement = None
+        
+    def get_picked_point(self, event: tkinter.Event):
+        if self.measuring:
+            x, y = self.rescale_point(int(event.x), (event.y))
+            self.picked_points.append((event.x, event.y))
+            
+            x_coord, y_coord = self.point_to_mm(self.controller.display_image, x, y)
+            self.measurement_points.append((x_coord,y_coord))
+            #print(f"x: {x_coord}, y: {y_coord}")
+            
+            distance = self.calculate_measurement()
+            self.draw_measurement(self.image_with_measurement, self.picked_points, distance)
+            
+            cv2.circle(self.image_with_measurement, (event.x, event.y), radius=5, color=(0, 0, 255), thickness=-1)
+            self.controller.show_image(self.image_with_measurement)
+            
+            return x_coord, y_coord
+        
+    def draw_measurement(self, image, points, distance):
+        cv2.circle(image, points[-1], radius=5, color=(0, 0, 255), thickness=-1)
+        if len(points) > 1:
+            cv2.line(image, points[-1], points[-2], (0, 255, 0), 2, 1)
+            cv2.getTextSize()
+            midpoint = self.calculate_half_way_point(points[-1],points[-2])
+            cv2.putText(image, f"{distance:.1f} mm",
+                                 midpoint,
+                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,10,255), 2)
+            self.controller.messagebox.show(f"Last measurement = {distance:.1f} mm")
+        self.controller.show_image(image)
+    
+    @staticmethod
+    def calculate_half_way_point(point_a: Tuple, point_b: Tuple) -> Tuple:
+        x1, y1 = point_a
+        x2, y2 = point_b
+        
+        x = (x1 + x2)/2
+        y = (y1 + y2)/2
+
+        return (int(x), int(y))
+    
+    def calculate_measurement(self):
+        if len(self.measurement_points) > 1:
+            distance = math.dist(self.measurement_points[-1],self.measurement_points[-2])
+            print(distance)
+
+            return distance
+            
+            
+    
+    def rescale_point(self, x, y):
+        x = x * self.controller.display_image_scale
+        y = y * self.controller.display_image_scale
+        
+        return int(x), int(y)
+    
+    def point_to_mm(self, image, x, y):
+        image_height, image_width = self.model.get_image_size(image)
+        
+        h = self.view.horiz_measurement.get("1.0",'end-1c')
+        v = self.view.vert_measurement.get("1.0",'end-1c')
+        
+        x_scale = int(h) / image_width
+        y_scale = int(v) / image_height
+        
+        return x * x_scale, y * y_scale
