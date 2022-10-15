@@ -8,7 +8,7 @@ class App(tk.Tk):
         super().__init__()
 
         self.title('Scraps')
-        self.testing = True
+        self.testing = False
         # create a model
         model = Calibration()
 
