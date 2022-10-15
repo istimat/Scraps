@@ -1,0 +1,5 @@
+ezdxf==0.18.1
+matplotlib==3.5.1
+numpy==1.22.3
+opencv_python==4.6.0.66
+Pillow==9.2.0
