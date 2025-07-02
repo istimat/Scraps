@@ -2,7 +2,7 @@
 Scraps is a tool that enables you to reuse scraps of material in your laser cutter, plasma cutter or waterjet machine, by digitizing the shape and position of your bits of scrap.
 The tool allows you to save a dxf file that you can import into the machines software and lay out your new parts to be cut onto the existing bits of scrap already in your machine.
 
-##Usage
+## Usage
 Browse to load an image taken of the machine bed with the scrap inside.
 You need to mark a set of four rectangular points that establish a rectangle of known dimensions.
 These dimensions need to be filled into the Measurements fields.
